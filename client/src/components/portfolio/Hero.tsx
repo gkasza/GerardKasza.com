@@ -2,7 +2,7 @@ import { ChevronDown, Linkedin, Mail, Github } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { motion } from "framer-motion";
-import headshotImage from "@assets/image_1768867819908.png";
+import headshotImage from "@assets/image_1768867819908.webp";
 
 export function Hero() {
   const scrollToAbout = () => {

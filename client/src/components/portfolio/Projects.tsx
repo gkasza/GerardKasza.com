@@ -4,9 +4,9 @@ import { useRef, useState, forwardRef } from "react";
 import { ExternalLink, Layers, LineChart, Lock, Sparkles, Target } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import advisorSignalsImg from "@assets/IMG_20260122_132629_335~2_1769106546521.jpg";
-import portfloImg from "@assets/portflo-screenshot.png";
-import jamesKaszaImg from "@assets/image_1772987645677.png";
+import advisorSignalsImg from "@assets/advisor-signals.webp";
+import portfloImg from "@assets/portflo-screenshot.webp";
+import jamesKaszaImg from "@assets/image_1772987645677.webp";
 
 const categories = ["All", "Wealth", "Crypto", "Sports"];
 
@@ -246,10 +246,12 @@ const ProjectCard = forwardRef<HTMLDivElement, { project: typeof projects[0]; in
       >
         <div className="relative h-32 bg-gradient-to-br from-primary/20 via-card to-neon-green/10 flex items-center justify-center overflow-hidden">
           {hasImage ? (
-            <img 
-              src={project.image as string} 
-              alt={project.title} 
+            <img
+              src={project.image as string}
+              alt={project.title}
               loading="lazy"
+              width={600}
+              height={128}
               className="w-full h-full object-cover object-center opacity-90 group-hover:opacity-100 group-hover:scale-105 transition-all duration-300"
             />
           ) : (
