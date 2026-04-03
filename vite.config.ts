@@ -15,5 +15,14 @@ export default defineConfig({
   build: {
     outDir: path.resolve(import.meta.dirname, "dist/public"),
     emptyOutDir: true,
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          "react-vendor": ["react", "react-dom"],
+          "framer-motion": ["framer-motion"],
+          form: ["react-hook-form", "@hookform/resolvers", "zod"],
+        },
+      },
+    },
   },
 });
