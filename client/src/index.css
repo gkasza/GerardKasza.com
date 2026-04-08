@@ -307,6 +307,182 @@
   animation: gradient-flow 4s linear infinite;
 }
 
+/* ===== DECODE NAME EFFECT ===== */
+.dn-name-wrapper {
+  display: inline-flex;
+  gap: 0;
+  font-size: inherit;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  line-height: 1.1;
+  position: relative;
+  padding-bottom: 8px;
+}
+
+.dn-word {
+  display: inline-flex;
+}
+
+.dn-word-space {
+  width: 0.3em;
+}
+
+.dn-letter {
+  display: inline-block;
+  position: relative;
+  min-width: 0.1em;
+  cursor: default;
+}
+
+/* Invisible sizer for letter width */
+.dn-letter .dn-sizer {
+  visibility: hidden;
+}
+
+.dn-letter .dn-scramble-char {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  text-align: center;
+  font-size: 0.85em;
+  font-weight: 600;
+  transition: color 0.08s ease;
+  pointer-events: none;
+}
+
+.dn-letter .dn-scramble-char.char-crypto {
+  color: rgba(245, 180, 40, 0.75);
+  text-shadow: 0 0 6px rgba(245, 180, 40, 0.3);
+}
+.dn-letter .dn-scramble-char.char-finance {
+  color: rgba(80, 230, 140, 0.7);
+  text-shadow: 0 0 6px rgba(80, 230, 140, 0.2);
+}
+.dn-letter .dn-scramble-char.char-tech {
+  color: rgba(100, 200, 240, 0.6);
+  text-shadow: 0 0 4px rgba(100, 200, 240, 0.2);
+}
+.dn-letter .dn-scramble-char.char-binary {
+  color: rgba(100, 200, 240, 0.35);
+}
+
+/* Real decoded character — hidden until JS adds .dn-show */
+.dn-letter .dn-real-char {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  text-align: center;
+  display: none;
+}
+
+.dn-letter .dn-real-char.dn-show {
+  display: block;
+}
+
+/* First name gradient: white to cool mint */
+.dn-letter .dn-real-char.dn-gradient-first {
+  background: linear-gradient(135deg, #f0f0f0 0%, #a8e6cf 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Last name gradient: refined cyan */
+.dn-letter .dn-real-char.dn-gradient-last {
+  background: linear-gradient(135deg, #56d4f5 0%, #a0e9ff 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Circuit trace glow */
+.dn-letter .dn-real-char.trace-active {
+  filter: drop-shadow(0 0 14px rgba(86, 212, 245, 0.7))
+          drop-shadow(0 0 28px rgba(86, 212, 245, 0.3));
+}
+
+/* Subtle idle glow pulse */
+.dn-letter .dn-real-char.idle-glow {
+  animation: dn-idle-pulse 5s ease-in-out infinite;
+}
+
+@keyframes dn-idle-pulse {
+  0%, 100% {
+    filter: drop-shadow(0 0 2px rgba(86, 212, 245, 0.1));
+  }
+  50% {
+    filter: drop-shadow(0 0 8px rgba(86, 212, 245, 0.3))
+            drop-shadow(0 0 16px rgba(86, 212, 245, 0.1));
+  }
+}
+
+/* Scan line */
+.dn-scan-line {
+  position: absolute;
+  top: 0;
+  left: -10%;
+  width: 3px;
+  height: 100%;
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    rgba(86, 212, 245, 0.08),
+    rgba(86, 212, 245, 0.45),
+    rgba(86, 212, 245, 0.08),
+    transparent
+  );
+  filter: blur(2px);
+  opacity: 0;
+  pointer-events: none;
+  z-index: 10;
+}
+
+/* Underline trace */
+.dn-underline-trace {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: linear-gradient(90deg,
+    rgba(168, 230, 207, 0.6),
+    rgba(86, 212, 245, 0.8),
+    rgba(86, 212, 245, 0.4)
+  );
+  box-shadow: 0 0 8px rgba(86, 212, 245, 0.3),
+              0 0 16px rgba(86, 212, 245, 0.1);
+  border-radius: 1px;
+  pointer-events: none;
+  z-index: 10;
+}
+
+/* Floating particles */
+.dn-particle {
+  position: absolute;
+  pointer-events: none;
+  font-size: 0.55rem;
+  font-weight: 600;
+  opacity: 0;
+  z-index: 5;
+  animation: dn-float-up 1.4s ease-out forwards;
+}
+
+@keyframes dn-float-up {
+  0% {
+    opacity: 0.55;
+    transform: translateY(0) scale(1);
+  }
+  60% {
+    opacity: 0.3;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-50px) translateX(var(--drift-x, 8px)) scale(0.4);
+  }
+}
+
 /* Fluid typography for Hero section - prevents awkward text wrapping */
 .text-fluid-hero {
   font-size: clamp(2.5rem, 8vw, 6rem);
@@ -531,6 +707,15 @@ img {
   
   .circuit-line-energy,
   .junction-pulse {
+    opacity: 0 !important;
+  }
+
+  .dn-letter.decoded.idle-glow::after {
+    animation: none !important;
+  }
+
+  .dn-particle {
+    animation: none !important;
     opacity: 0 !important;
   }
 }

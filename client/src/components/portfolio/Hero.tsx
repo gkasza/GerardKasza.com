@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { motion } from "framer-motion";
 import headshotImage from "@assets/image_1768867819908.webp";
+import { DecodeName } from "./DecodeName";
 
 export function Hero() {
   const scrollToAbout = () => {
@@ -58,9 +59,7 @@ export function Hero() {
             className="space-y-4"
           >
             <h1 className="font-heading text-fluid-hero font-bold tracking-tight whitespace-nowrap">
-              <span className="bg-gradient-to-r from-foreground via-primary via-50% to-neon-green bg-clip-text text-transparent animate-gradient-flow">
-                Gerard Kasza
-              </span>
+              <DecodeName firstName="Gerard" lastName="Kasza" />
             </h1>
             {/* Mobile: stacked layout */}
             <div className="md:hidden text-center space-y-2">
