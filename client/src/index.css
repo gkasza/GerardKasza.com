@@ -547,6 +547,8 @@ h2:hover .text-primary {
   position: relative;
   transition: transform 0.15s ease-out;
   transform-style: preserve-3d;
+  overflow: hidden;
+  align-self: start;
 }
 
 .tilt-card-glare {
