@@ -3,16 +3,16 @@ import { useEffect, useRef, useCallback } from "react";
 const SYMBOL_SETS = {
   crypto: {
     chars: [
-      "\u20BF", "\u20BF", "\u20BF", "\u20BF",
+      "\u20BF", "\u20BF", "\u20BF", "\u20BF", "\u20BF", "\u20BF", "\u20BF", "\u20BF",
       "\u039E", "\u039E", "\u039E", "\u039E",
-      "\u25C8", "\u25C8", "\u25C8",
-      "\u039B", "\u039B",
+      "\u25C8", "\u25C8",
+      "\u039B",
       "\u0394", "\u00D7", "\u221E", "\u26A1", "\u2B21", "\u2666", "\u03A3",
     ],
     css: "char-crypto",
   },
   finance: {
-    chars: ["$", "$", "\u20AC", "\u00A3", "\u00A5", "%", "\u25B3"],
+    chars: ["$", "$", "$", "$", "$", "$", "$", "$", "\u20AC", "\u00A3", "\u00A5", "%", "\u25B3"],
     css: "char-finance",
   },
   tech: {
@@ -25,10 +25,16 @@ const SYMBOL_SETS = {
   },
 };
 
-const ALL_CATEGORIES = Object.keys(SYMBOL_SETS) as (keyof typeof SYMBOL_SETS)[];
+// Weighted category selection: crypto and finance appear ~3x more than tech/binary
+const WEIGHTED_CATEGORIES: (keyof typeof SYMBOL_SETS)[] = [
+  "crypto", "crypto", "crypto",
+  "finance", "finance", "finance",
+  "tech",
+  "binary",
+];
 
 function randomSymbol() {
-  const cat = ALL_CATEGORIES[Math.floor(Math.random() * ALL_CATEGORIES.length)];
+  const cat = WEIGHTED_CATEGORIES[Math.floor(Math.random() * WEIGHTED_CATEGORIES.length)];
   const set = SYMBOL_SETS[cat];
   const char = set.chars[Math.floor(Math.random() * set.chars.length)];
   return { char, css: set.css };
