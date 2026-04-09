@@ -2,15 +2,14 @@ import { useEffect, useRef, useState, useCallback } from "react";
 
 interface PriceData {
   symbol: string;
-  label: string;
   price: number | null;
   prevPrice: number | null;
 }
 
 const ASSETS = [
-  { id: "bitcoin", symbol: "BTC", label: "Bitcoin" },
-  { id: "ethereum", symbol: "ETH", label: "Ethereum" },
-  { id: "solana", symbol: "SOL", label: "Solana" },
+  { id: "bitcoin", symbol: "BTC" },
+  { id: "ethereum", symbol: "ETH" },
+  { id: "solana", symbol: "SOL" },
 ];
 
 const ICON_MAP: Record<string, string> = {
@@ -18,6 +17,8 @@ const ICON_MAP: Record<string, string> = {
   ETH: "\u039E",
   SOL: "\u25C8",
 };
+
+const POLL_INTERVAL = 60_000; // 60s — well within CoinGecko free tier limits
 
 function formatPrice(price: number): string {
   if (price >= 1000) return price.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
@@ -27,64 +28,44 @@ function formatPrice(price: number): string {
 
 export function CryptoTicker() {
   const [prices, setPrices] = useState<PriceData[]>(
-    ASSETS.map((a) => ({ symbol: a.symbol, label: a.label, price: null, prevPrice: null }))
+    ASSETS.map((a) => ({ symbol: a.symbol, price: null, prevPrice: null }))
   );
-  const [connected, setConnected] = useState(false);
-  const wsRef = useRef<WebSocket | null>(null);
-  const reconnectTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const [live, setLive] = useState(false);
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
-  const connect = useCallback(() => {
-    if (wsRef.current?.readyState === WebSocket.OPEN) return;
-
+  const fetchPrices = useCallback(async () => {
     try {
-      const ws = new WebSocket(
-        `wss://ws.coincap.io/prices?assets=${ASSETS.map((a) => a.id).join(",")}`
+      const ids = ASSETS.map((a) => a.id).join(",");
+      const res = await fetch(
+        `https://api.coingecko.com/api/v3/simple/price?ids=${ids}&vs_currencies=usd`
       );
+      if (!res.ok) return;
+      const data = await res.json();
 
-      ws.onopen = () => setConnected(true);
-
-      ws.onmessage = (event) => {
-        try {
-          const data = JSON.parse(event.data) as Record<string, string>;
-          setPrices((prev) =>
-            prev.map((p) => {
-              const asset = ASSETS.find((a) => a.symbol === p.symbol);
-              if (!asset) return p;
-              const newPrice = data[asset.id];
-              if (newPrice === undefined) return p;
-              return { ...p, prevPrice: p.price, price: parseFloat(newPrice) };
-            })
-          );
-        } catch {
-          // ignore malformed messages
-        }
-      };
-
-      ws.onclose = () => {
-        setConnected(false);
-        reconnectTimeoutRef.current = setTimeout(connect, 5000);
-      };
-
-      ws.onerror = () => ws.close();
-
-      wsRef.current = ws;
+      setPrices((prev) =>
+        prev.map((p) => {
+          const asset = ASSETS.find((a) => a.symbol === p.symbol);
+          if (!asset || !data[asset.id]?.usd) return p;
+          return { ...p, prevPrice: p.price, price: data[asset.id].usd };
+        })
+      );
+      setLive(true);
     } catch {
-      reconnectTimeoutRef.current = setTimeout(connect, 5000);
+      // silently fail — prices just stay stale
     }
   }, []);
 
   useEffect(() => {
-    connect();
+    fetchPrices();
+    intervalRef.current = setInterval(fetchPrices, POLL_INTERVAL);
     return () => {
-      if (reconnectTimeoutRef.current) clearTimeout(reconnectTimeoutRef.current);
-      wsRef.current?.close();
+      if (intervalRef.current) clearInterval(intervalRef.current);
     };
-  }, [connect]);
+  }, [fetchPrices]);
 
   return (
     <div className="crypto-ticker" aria-label="Live cryptocurrency prices">
       <div className="crypto-ticker-track">
-        {/* Duplicate items for seamless loop */}
         {[...prices, ...prices].map((p, i) => (
           <span key={`${p.symbol}-${i}`} className="crypto-ticker-item">
             <span className="crypto-ticker-icon">{ICON_MAP[p.symbol]}</span>
@@ -105,7 +86,7 @@ export function CryptoTicker() {
           </span>
         ))}
       </div>
-      <span className={`crypto-ticker-dot ${connected ? "dot-live" : "dot-off"}`} title={connected ? "Live" : "Reconnecting"} />
+      <span className={`crypto-ticker-dot ${live ? "dot-live" : "dot-off"}`} title={live ? "Live" : "Loading"} />
     </div>
   );
 }
