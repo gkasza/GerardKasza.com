@@ -68,7 +68,7 @@ export function Navigation() {
                 className="ml-2 bg-primary hover:bg-primary/90 text-primary-foreground font-medium px-4"
                 data-testid="button-lets-connect"
               >
-                Let's Connect!
+                Get in Touch
               </Button>
             </div>
 
@@ -138,7 +138,7 @@ export function Navigation() {
                     className="w-full mt-4 bg-primary hover:bg-primary/90 text-primary-foreground font-medium"
                     data-testid="mobile-button-lets-connect"
                   >
-                    Let's Connect!
+                    Get in Touch
                   </Button>
                 </motion.div>
               </div>

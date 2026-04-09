@@ -1,7 +1,7 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { useInView } from "framer-motion";
 import { useRef, useState, forwardRef } from "react";
-import { ExternalLink, Layers, LineChart, Lock, Sparkles, Target } from "lucide-react";
+import { ExternalLink, Layers, LineChart, Lock, Mail, Sparkles, Target } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import advisorSignalsImg from "@assets/advisor-signals.webp";
@@ -86,7 +86,7 @@ const PrivateProjectsCard = forwardRef<HTMLDivElement, { index: number; onReques
         <div className="p-6 space-y-4">
           <div className="flex items-start justify-between gap-3">
             <h3 className="font-heading text-lg font-semibold text-foreground group-hover:text-primary transition-colors">
-              More Projects [Password Required]
+              More Projects [Request Access]
             </h3>
           </div>
           
@@ -106,29 +106,7 @@ const PrivateProjectsCard = forwardRef<HTMLDivElement, { index: number; onReques
   }
 );
 
-function PrivateLoginModal({ show, onClose }: { show: boolean; onClose: () => void }) {
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState(false);
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!password.trim()) return;
-    setIsSubmitting(true);
-    setError("");
-    setTimeout(() => {
-      setIsSubmitting(false);
-      setError("Access denied. Invalid credentials.");
-      setPassword("");
-    }, 1500);
-  };
-
-  const handleClose = () => {
-    onClose();
-    setPassword("");
-    setError("");
-  };
-
+function RequestAccessModal({ show, onClose }: { show: boolean; onClose: () => void }) {
   return (
     <AnimatePresence>
       {show && (
@@ -138,8 +116,8 @@ function PrivateLoginModal({ show, onClose }: { show: boolean; onClose: () => vo
           exit={{ opacity: 0 }}
           transition={{ duration: 0.2 }}
           className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4"
-          onClick={handleClose}
-          data-testid="private-login-overlay"
+          onClick={onClose}
+          data-testid="request-access-overlay"
         >
           <motion.div
             initial={{ opacity: 0, scale: 0.9, y: 20 }}
@@ -155,55 +133,39 @@ function PrivateLoginModal({ show, onClose }: { show: boolean; onClose: () => vo
                   <Lock className="w-5 h-5 text-primary" />
                 </div>
               </div>
-              <h3 className="font-heading text-lg font-semibold text-foreground">Private Access</h3>
-              <p className="text-muted-foreground text-sm">Enter the password to view private projects.</p>
+              <h3 className="font-heading text-lg font-semibold text-foreground">Request Access</h3>
+              <p className="text-muted-foreground text-sm">
+                These projects are private. Reach out and I'll be happy to walk you through demos and discuss ideas.
+              </p>
             </div>
 
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div className="space-y-2">
-                <input
-                  type="password"
-                  value={password}
-                  onChange={(e) => { setPassword(e.target.value); setError(""); }}
-                  placeholder="Enter password"
-                  className="w-full px-3 py-2 rounded-md bg-background border border-border text-foreground text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all"
-                  autoFocus
-                  data-testid="input-private-password"
-                />
-                <AnimatePresence>
-                  {error && (
-                    <motion.p
-                      initial={{ opacity: 0, y: -5 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0 }}
-                      className="text-red-400 text-xs"
-                      data-testid="text-login-error"
-                    >
-                      {error}
-                    </motion.p>
-                  )}
-                </AnimatePresence>
-              </div>
-
-              <div className="flex gap-3">
-                <button
-                  type="button"
-                  onClick={handleClose}
-                  className="flex-1 px-4 py-2 rounded-md border border-border text-muted-foreground text-sm hover:text-foreground hover:border-primary/50 transition-all"
-                  data-testid="button-cancel-login"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  disabled={isSubmitting || !password.trim()}
-                  className="flex-1 px-4 py-2 rounded-md bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-                  data-testid="button-submit-login"
-                >
-                  {isSubmitting ? "Verifying..." : "Unlock"}
-                </button>
-              </div>
-            </form>
+            <div className="space-y-3">
+              <a
+                href="mailto:gjkasza@gmail.com?subject=Private%20Projects%20Access%20Request"
+                className="flex items-center justify-center gap-2 w-full px-4 py-2.5 rounded-md bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-all"
+                data-testid="button-email-access"
+              >
+                <Mail className="w-4 h-4" />
+                gjkasza@gmail.com
+              </a>
+              <a
+                href="https://www.linkedin.com/in/gerard-kasza-0x0/"
+                target="_blank"
+                rel="me noopener noreferrer"
+                className="flex items-center justify-center gap-2 w-full px-4 py-2.5 rounded-md border border-border text-muted-foreground text-sm hover:text-foreground hover:border-primary/50 transition-all"
+                data-testid="button-linkedin-access"
+              >
+                Connect on LinkedIn
+              </a>
+              <button
+                type="button"
+                onClick={onClose}
+                className="w-full px-4 py-2 text-muted-foreground/60 text-sm hover:text-muted-foreground transition-colors"
+                data-testid="button-cancel-access"
+              >
+                Close
+              </button>
+            </div>
           </motion.div>
         </motion.div>
       )}
@@ -371,7 +333,7 @@ export function Projects() {
         </motion.div>
       </div>
 
-      <PrivateLoginModal show={showLogin} onClose={() => setShowLogin(false)} />
+      <RequestAccessModal show={showLogin} onClose={() => setShowLogin(false)} />
     </section>
   );
 }

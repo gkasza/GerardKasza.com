@@ -216,15 +216,19 @@ export function Contact() {
                   </div>
                 </a>
                 
-                <div className="flex items-center gap-4 p-4 rounded-lg bg-background/30 border border-border">
+                <a
+                  href="mailto:gjkasza@gmail.com"
+                  className="flex items-center gap-4 p-4 rounded-lg bg-background/30 border border-border hover-elevate transition-colors"
+                  data-testid="link-email-contact"
+                >
                   <div className="w-12 h-12 rounded-full bg-neon-green/10 flex items-center justify-center">
                     <Mail className="w-5 h-5 text-neon-green" />
                   </div>
                   <div>
                     <p className="font-medium text-foreground">Email</p>
-                    <p className="text-sm text-muted-foreground">Available upon request</p>
+                    <p className="text-sm text-muted-foreground">gjkasza@gmail.com</p>
                   </div>
-                </div>
+                </a>
                 
                 <div className="flex items-center gap-4 p-4 rounded-lg bg-background/30 border border-border">
                   <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
