@@ -71,24 +71,39 @@ const experiences = [
 ];
 
 function renderAchievement(text: string) {
-  if (text.includes("held-away.com")) {
-    const parts = text.split("held-away.com");
-    return (
-      <span>
-        {parts[0]}
-        <a 
-          href="https://held-away.com/" 
-          target="_blank" 
-          rel="noopener noreferrer" 
-          className="text-primary hover:text-neon-green transition-colors underline underline-offset-2 inline"
-        >
-          held-away.com
-        </a>
-        {parts[1]}
-      </span>
-    );
-  }
-  return text;
+  // Bold key metrics: $amounts, percentages, and counts with units (e.g. "73 new advisors", "50+ enterprise")
+  const bolded = text.replace(
+    /(\$[\d.]+[MBK]*\+?(?:\s*over\s*\d+\s*years)?|[\d,]+%(?:\s*of\s*target)?|\d+%?\s*and\s*\d+%?\s*YoY|[\d,]+\+\s*enterprise|\$[\d,]+K|\d+\s+new\s+advisors|\d+\s+months)/g,
+    '**$1**'
+  );
+
+  // Split on **...** markers and bold/link segments
+  const parts = bolded.split(/\*\*(.+?)\*\*/g);
+  const elements = parts.map((part, i) => {
+    if (i % 2 === 1) {
+      return <strong key={i} className="text-foreground/90 font-semibold">{part}</strong>;
+    }
+    if (part.includes("held-away.com")) {
+      const [before, after] = part.split("held-away.com");
+      return (
+        <span key={i}>
+          {before}
+          <a
+            href="https://held-away.com/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-primary hover:text-neon-green transition-colors underline underline-offset-2 inline"
+          >
+            held-away.com
+          </a>
+          {after}
+        </span>
+      );
+    }
+    return part;
+  });
+
+  return <span>{elements}</span>;
 }
 
 function TimelineItem({ experience, index }: { experience: typeof experiences[0]; index: number }) {

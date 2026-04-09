@@ -65,7 +65,7 @@ export function Navigation() {
               ))}
               <Button
                 onClick={() => handleNavClick("#contact")}
-                className="ml-2 bg-[#00d9ff] hover:bg-[#00c4e6] text-black font-medium px-4"
+                className="ml-2 bg-primary hover:bg-primary/90 text-primary-foreground font-medium px-4"
                 data-testid="button-lets-connect"
               >
                 Let's Connect!
@@ -135,7 +135,7 @@ export function Navigation() {
                 >
                   <Button
                     onClick={() => handleNavClick("#contact")}
-                    className="w-full mt-4 bg-[#00d9ff] hover:bg-[#00c4e6] text-black font-medium"
+                    className="w-full mt-4 bg-primary hover:bg-primary/90 text-primary-foreground font-medium"
                     data-testid="mobile-button-lets-connect"
                   >
                     Let's Connect!

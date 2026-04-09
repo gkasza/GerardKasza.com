@@ -203,7 +203,7 @@ export function Contact() {
                 <a
                   href="https://www.linkedin.com/in/gerard-kasza-0x0/"
                   target="_blank"
-                  rel="noopener noreferrer"
+                  rel="me noopener noreferrer"
                   className="flex items-center gap-4 p-4 rounded-lg bg-background/30 border border-border hover-elevate transition-colors"
                   data-testid="link-linkedin-contact"
                 >

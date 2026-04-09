@@ -101,7 +101,7 @@ export function Hero() {
             <a
               href="https://www.linkedin.com/in/gerard-kasza-0x0/"
               target="_blank"
-              rel="noopener noreferrer"
+              rel="me noopener noreferrer"
               className="inline-flex items-center gap-2 text-sm font-medium text-primary/70 hover:text-primary transition-colors min-h-[44px]"
               data-testid="link-linkedin-hero"
             >

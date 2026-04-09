@@ -30,7 +30,7 @@ export function Footer() {
               asChild
               data-testid="link-linkedin-footer"
             >
-              <a href="https://www.linkedin.com/in/gerard-kasza-0x0/" target="_blank" rel="noopener noreferrer">
+              <a href="https://www.linkedin.com/in/gerard-kasza-0x0/" target="_blank" rel="me noopener noreferrer">
                 <Linkedin className="w-4 h-4" />
               </a>
             </Button>
