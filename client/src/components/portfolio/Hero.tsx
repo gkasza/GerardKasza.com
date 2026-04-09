@@ -61,34 +61,25 @@ export function Hero() {
             <h1 className="font-heading text-fluid-hero font-bold tracking-tight whitespace-nowrap">
               <DecodeName firstName="Gerard" lastName="Kasza" />
             </h1>
-            {/* Mobile: stacked layout */}
-            <div className="md:hidden text-center space-y-2">
-              <p className="text-sm sm:text-base font-medium text-[#c1cbd5]">
+            {/* Differentiating tagline */}
+            <p className="text-sm sm:text-base md:text-lg font-medium text-[#c1cbd5] max-w-lg mx-auto leading-relaxed">
+              I close enterprise deals <span className="text-primary">and</span> build the technology behind them.
+            </p>
+            {/* Role + verticals */}
+            <div className="space-y-1.5">
+              <p className="text-xs sm:text-sm md:text-base font-medium text-muted-foreground/70 tracking-wide uppercase">
                 Enterprise GTM & Partnerships Executive
               </p>
               <p className="text-sm sm:text-base font-medium">
                 <span className="text-primary">Wealth</span>
-                <span className="text-muted-foreground"> • </span>
+                <span className="text-muted-foreground/50"> • </span>
                 <span className="text-primary">Banking</span>
-                <span className="text-muted-foreground"> • </span>
+                <span className="text-muted-foreground/50"> • </span>
                 <span className="text-primary">Fintech</span>
-                <span className="text-muted-foreground"> • </span>
+                <span className="text-muted-foreground/50"> • </span>
                 <span className="text-primary">Crypto</span>
               </p>
             </div>
-            {/* Desktop: inline layout */}
-            <p className="hidden md:block text-fluid-tagline font-medium mx-auto text-center whitespace-nowrap">
-              <span className="text-[#c1cbd5]">Enterprise GTM & Partnerships Executive</span>
-              <span className="text-primary/50 mx-3">|</span>
-              <span className="text-primary">Wealth</span>
-              <span className="text-muted-foreground"> • </span>
-              <span className="text-primary">Banking</span>
-              <span className="text-muted-foreground"> • </span>
-              <span className="text-primary">Fintech</span>
-              <span className="text-muted-foreground"> • </span>
-              <span className="text-primary">Crypto</span>
-            </p>
-            <p className="text-muted-foreground text-xs sm:text-sm md:text-base lg:text-lg mx-auto text-center max-w-md md:max-w-none md:whitespace-nowrap px-4">Revenue Growth & Strategic Partnerships • AI & Blockchain Innovation • WealthTech & Digital Assets Leadership</p>
           </motion.div>
 
           <motion.div
@@ -100,25 +91,23 @@ export function Hero() {
             <Button
               variant="default"
               size="lg"
-              className="font-heading min-h-[44px]"
-              onClick={() => document.getElementById("about")?.scrollIntoView({ behavior: "smooth" })}
+              className="font-heading min-h-[44px] px-8 text-base shadow-lg shadow-primary/20"
+              onClick={() => document.getElementById("recognition")?.scrollIntoView({ behavior: "smooth" })}
               data-testid="button-explore-hero"
             >
-              Explore My Work
+              See My Track Record
               <ChevronDown className="w-4 h-4 ml-2" />
             </Button>
-            <Button
-              variant="outline"
-              size="lg"
-              className="font-heading border-primary/50 text-primary backdrop-blur-sm min-h-[44px]"
-              asChild
+            <a
+              href="https://www.linkedin.com/in/gerard-kasza-0x0/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 text-sm font-medium text-primary/70 hover:text-primary transition-colors min-h-[44px]"
               data-testid="link-linkedin-hero"
             >
-              <a href="https://www.linkedin.com/in/gerard-kasza-0x0/" target="_blank" rel="noopener noreferrer">
-                <Linkedin className="w-4 h-4 mr-2" />
-                Connect on LinkedIn
-              </a>
-            </Button>
+              <Linkedin className="w-4 h-4" />
+              Connect on LinkedIn
+            </a>
           </motion.div>
 
           <motion.button
