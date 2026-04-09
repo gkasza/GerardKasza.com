@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { useInView } from "framer-motion";
 import { useRef } from "react";
 import { Lightbulb, Sparkles, Zap, Brain, Shield, TrendingUp, Flame } from "lucide-react";
+import { TiltCard } from "./TiltCard";
 
 const ideas = [
   {
@@ -99,32 +100,33 @@ export function Ideas() {
             const iconColor = idea.accent === "neon" ? "text-neon-green" : "text-primary";
 
             return (
-              <motion.div
-                key={idea.id}
-                initial={{ opacity: 0, y: 25 }}
-                animate={isInView ? { opacity: 1, y: 0 } : {}}
-                transition={{ delay: 0.2 + index * 0.1, duration: 0.5 }}
-                className="group backdrop-blur-md bg-card/50 border border-border rounded-lg p-5 relative overflow-hidden hover:border-primary/40 transition-all duration-300 hover:-translate-y-0.5"
-                data-testid={`idea-item-${idea.id}`}
-              >
-                <div className="absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-primary/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+              <TiltCard key={idea.id} className="rounded-lg">
+                <motion.div
+                  initial={{ opacity: 0, y: 25 }}
+                  animate={isInView ? { opacity: 1, y: 0 } : {}}
+                  transition={{ delay: 0.2 + index * 0.1, duration: 0.5 }}
+                  className="group backdrop-blur-md bg-card/50 border border-border rounded-lg p-5 relative overflow-hidden hover:border-primary/40 transition-all duration-300"
+                  data-testid={`idea-item-${idea.id}`}
+                >
+                  <div className="absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-primary/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
 
-                <div className="flex items-start justify-between gap-3 mb-3">
-                  <div className={`w-10 h-10 rounded-[10px] ${iconBg} border flex items-center justify-center flex-shrink-0`}>
-                    <Icon className={`w-4.5 h-4.5 ${iconColor}`} />
+                  <div className="flex items-start justify-between gap-3 mb-3">
+                    <div className={`w-10 h-10 rounded-[10px] ${iconBg} border flex items-center justify-center flex-shrink-0`}>
+                      <Icon className={`w-4.5 h-4.5 ${iconColor}`} />
+                    </div>
+                    <span className={`text-[0.65rem] font-medium px-2 py-0.5 rounded-full border ${statusClass}`}>
+                      {idea.status}
+                    </span>
                   </div>
-                  <span className={`text-[0.65rem] font-medium px-2 py-0.5 rounded-full border ${statusClass}`}>
-                    {idea.status}
-                  </span>
-                </div>
 
-                <h3 className="font-heading text-base font-semibold text-foreground mb-2 group-hover:text-primary transition-colors">
-                  {idea.title}
-                </h3>
-                <p className="text-sm text-muted-foreground/70 leading-relaxed">
-                  {idea.oneliner}
-                </p>
-              </motion.div>
+                  <h3 className="font-heading text-base font-semibold text-foreground mb-2 group-hover:text-primary transition-colors">
+                    {idea.title}
+                  </h3>
+                  <p className="text-sm text-muted-foreground/70 leading-relaxed">
+                    {idea.oneliner}
+                  </p>
+                </motion.div>
+              </TiltCard>
             );
           })}
         </div>

@@ -4,6 +4,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { motion } from "framer-motion";
 import headshotImage from "@assets/image_1768867819908.webp";
 import { DecodeName } from "./DecodeName";
+import { CryptoTicker } from "./CryptoTicker";
 
 export function Hero() {
   const scrollToAbout = () => {
@@ -80,6 +81,15 @@ export function Hero() {
                 <span className="text-primary">Crypto</span>
               </p>
             </div>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 2.5, duration: 0.8 }}
+            className="w-full max-w-xs mx-auto"
+          >
+            <CryptoTicker />
           </motion.div>
 
           <motion.div

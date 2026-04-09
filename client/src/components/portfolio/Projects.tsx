@@ -4,6 +4,7 @@ import { useRef, useState, forwardRef } from "react";
 import { ExternalLink, Layers, LineChart, Lock, Mail, Sparkles, Target } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { TiltCard } from "./TiltCard";
 import advisorSignalsImg from "@assets/advisor-signals.webp";
 import portfloImg from "@assets/portflo-screenshot.webp";
 import jamesKaszaImg from "@assets/image_1772987645677.webp";
@@ -188,85 +189,87 @@ const ProjectCard = forwardRef<HTMLDivElement, { project: typeof projects[0]; in
     };
 
     return (
-      <motion.div
-        ref={(node) => {
-          (inViewRef as React.MutableRefObject<HTMLDivElement | null>).current = node;
-          if (typeof forwardedRef === 'function') forwardedRef(node);
-          else if (forwardedRef) forwardedRef.current = node;
-        }}
-        layout
-        initial={{ opacity: 0, y: 30, scale: 0.95 }}
-        animate={isInView ? { opacity: 1, y: 0, scale: 1 } : {}}
-        exit={{ opacity: 0, scale: 0.95, transition: { duration: 0.2 } }}
-        transition={{ delay: index * 0.1, duration: 0.4 }}
-        className={`group backdrop-blur-md bg-card/60 border border-border rounded-lg overflow-hidden hover:border-primary/50 transition-all duration-300 ${hasLink ? 'cursor-pointer' : ''}`}
-        data-testid={`project-card-${project.id}`}
-        onClick={handleCardClick}
-        onKeyDown={hasLink ? (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleCardClick(); } } : undefined}
-        role={hasLink ? "link" : undefined}
-        tabIndex={hasLink ? 0 : undefined}
-      >
-        <div className="relative h-32 bg-gradient-to-br from-primary/20 via-card to-neon-green/10 flex items-center justify-center overflow-hidden">
-          {hasImage ? (
-            <img
-              src={project.image as string}
-              alt={project.title}
-              loading="lazy"
-              width={600}
-              height={128}
-              className="w-full h-full object-cover object-center opacity-90 group-hover:opacity-100 group-hover:scale-105 transition-all duration-300"
-            />
-          ) : (
-            <Icon className="w-12 h-12 text-primary/60 group-hover:text-primary group-hover:scale-110 transition-all duration-300" />
-          )}
-          <div className="absolute top-3 right-3">
-            <Badge variant="secondary" className="bg-neon-green/20 text-neon-green border-neon-green/30 text-xs">
-              {project.highlight}
-            </Badge>
-          </div>
-          {hasLink && (
-            <div className="absolute top-3 left-3">
-              <ExternalLink className="w-4 h-4 text-primary" />
+      <TiltCard className="rounded-lg">
+        <motion.div
+          ref={(node) => {
+            (inViewRef as React.MutableRefObject<HTMLDivElement | null>).current = node;
+            if (typeof forwardedRef === 'function') forwardedRef(node);
+            else if (forwardedRef) forwardedRef.current = node;
+          }}
+          layout
+          initial={{ opacity: 0, y: 30, scale: 0.95 }}
+          animate={isInView ? { opacity: 1, y: 0, scale: 1 } : {}}
+          exit={{ opacity: 0, scale: 0.95, transition: { duration: 0.2 } }}
+          transition={{ delay: index * 0.1, duration: 0.4 }}
+          className={`group backdrop-blur-md bg-card/60 border border-border rounded-lg overflow-hidden hover:border-primary/50 transition-all duration-300 ${hasLink ? 'cursor-pointer' : ''}`}
+          data-testid={`project-card-${project.id}`}
+          onClick={handleCardClick}
+          onKeyDown={hasLink ? (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleCardClick(); } } : undefined}
+          role={hasLink ? "link" : undefined}
+          tabIndex={hasLink ? 0 : undefined}
+        >
+          <div className="relative h-32 bg-gradient-to-br from-primary/20 via-card to-neon-green/10 flex items-center justify-center overflow-hidden">
+            {hasImage ? (
+              <img
+                src={project.image as string}
+                alt={project.title}
+                loading="lazy"
+                width={600}
+                height={128}
+                className="w-full h-full object-cover object-center opacity-90 group-hover:opacity-100 group-hover:scale-105 transition-all duration-300"
+              />
+            ) : (
+              <Icon className="w-12 h-12 text-primary/60 group-hover:text-primary group-hover:scale-110 transition-all duration-300" />
+            )}
+            <div className="absolute top-3 right-3">
+              <Badge variant="secondary" className="bg-neon-green/20 text-neon-green border-neon-green/30 text-xs">
+                {project.highlight}
+              </Badge>
             </div>
-          )}
-        </div>
-        
-        <div className="p-6 space-y-4">
-          <div className="flex items-start justify-between gap-3">
-            <h3 className="font-heading text-lg font-semibold text-foreground group-hover:text-primary transition-colors">
-              {project.title}
-            </h3>
+            {hasLink && (
+              <div className="absolute top-3 left-3">
+                <ExternalLink className="w-4 h-4 text-primary" />
+              </div>
+            )}
           </div>
-          
-          <p className="text-muted-foreground text-sm leading-relaxed">
-            {project.description}
-          </p>
-          
-          {'featuredLink' in project && project.featuredLink && (
-            <p className="text-sm">
-              <span className="text-muted-foreground">{(project as any).featuredText} </span>
-              <a 
-                href={(project as any).featuredLink}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-primary hover:text-neon-green transition-colors underline underline-offset-2"
-                onClick={(e) => e.stopPropagation()}
-                data-testid="link-featured-wealthmanagement"
-              >
-                {(project as any).featuredSite}
-              </a>
+
+          <div className="p-6 space-y-4">
+            <div className="flex items-start justify-between gap-3">
+              <h3 className="font-heading text-lg font-semibold text-foreground group-hover:text-primary transition-colors">
+                {project.title}
+              </h3>
+            </div>
+
+            <p className="text-muted-foreground text-sm leading-relaxed">
+              {project.description}
             </p>
-          )}
-          
-          <div className="flex flex-wrap gap-2">
-            {project.tags.map((tag, i) => (
-              <span key={i} className="text-xs bg-primary/10 text-primary/80 px-2 py-1 rounded-md">
-                {tag}
-              </span>
-            ))}
+
+            {'featuredLink' in project && project.featuredLink && (
+              <p className="text-sm">
+                <span className="text-muted-foreground">{(project as any).featuredText} </span>
+                <a
+                  href={(project as any).featuredLink}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-primary hover:text-neon-green transition-colors underline underline-offset-2"
+                  onClick={(e) => e.stopPropagation()}
+                  data-testid="link-featured-wealthmanagement"
+                >
+                  {(project as any).featuredSite}
+                </a>
+              </p>
+            )}
+
+            <div className="flex flex-wrap gap-2">
+              {project.tags.map((tag, i) => (
+                <span key={i} className="text-xs bg-primary/10 text-primary/80 px-2 py-1 rounded-md">
+                  {tag}
+                </span>
+              ))}
+            </div>
           </div>
-        </div>
-      </motion.div>
+        </motion.div>
+      </TiltCard>
     );
   }
 );
