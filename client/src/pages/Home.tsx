@@ -6,6 +6,7 @@ import { Projects } from "@/components/portfolio/Projects";
 import { Ideas } from "@/components/portfolio/Ideas";
 import { Contact } from "@/components/portfolio/Contact";
 import { Footer } from "@/components/portfolio/Footer";
+import { Recognition } from "@/components/portfolio/Recognition";
 import { CircuitBackground } from "@/components/CircuitBackground";
 
 export default function Home() {
@@ -16,6 +17,7 @@ export default function Home() {
         <Navigation />
         <main>
           <Hero />
+          <Recognition />
           <About />
           <Timeline />
           <Projects />
