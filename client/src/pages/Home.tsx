@@ -7,6 +7,7 @@ import { Ideas } from "@/components/portfolio/Ideas";
 import { Contact } from "@/components/portfolio/Contact";
 import { Footer } from "@/components/portfolio/Footer";
 import { Recognition } from "@/components/portfolio/Recognition";
+import { Philosophy } from "@/components/portfolio/Philosophy";
 import { CircuitBackground } from "@/components/CircuitBackground";
 
 export default function Home() {
@@ -18,6 +19,7 @@ export default function Home() {
         <main>
           <Hero />
           <Recognition />
+          <Philosophy />
           <About />
           <Timeline />
           <Projects />

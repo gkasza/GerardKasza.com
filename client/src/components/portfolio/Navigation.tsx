@@ -1,6 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Menu, X } from "lucide-react";
+import { Menu, X, Moon, Stars } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const navItems = [
@@ -14,6 +14,7 @@ const navItems = [
 export function Navigation() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [theme, setTheme] = useState<"midnight" | "deep-space">("midnight");
 
   useEffect(() => {
     const handleScroll = () => {
@@ -22,6 +23,12 @@ export function Navigation() {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  const toggleTheme = useCallback(() => {
+    const next = theme === "midnight" ? "deep-space" : "midnight";
+    setTheme(next);
+    document.documentElement.setAttribute("data-theme", next);
+  }, [theme]);
 
   const handleNavClick = (href: string) => {
     setIsMobileMenuOpen(false);
@@ -44,13 +51,23 @@ export function Navigation() {
       >
         <div className="container mx-auto px-6">
           <div className="flex items-center justify-between h-16">
-            <button
-              onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-              className="font-heading text-lg font-bold text-foreground hover:text-primary transition-colors"
-              data-testid="link-logo"
-            >
-              G<span className="text-primary">K</span>
-            </button>
+            <div className="flex items-center gap-3">
+              <button
+                onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+                className="font-heading text-lg font-bold text-foreground hover:text-primary transition-colors"
+                data-testid="link-logo"
+              >
+                G<span className="text-primary">K</span>
+              </button>
+              <button
+                onClick={toggleTheme}
+                className="text-muted-foreground/40 hover:text-primary transition-colors p-1"
+                aria-label={`Switch to ${theme === "midnight" ? "deep space" : "midnight"} theme`}
+                data-testid="button-theme-toggle"
+              >
+                {theme === "midnight" ? <Stars className="w-3.5 h-3.5" /> : <Moon className="w-3.5 h-3.5" />}
+              </button>
+            </div>
 
             <div className="hidden md:flex items-center gap-1">
               {navItems.filter(item => item.label !== "Contact").map((item) => (

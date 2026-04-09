@@ -218,7 +218,10 @@ export function Timeline() {
         </motion.div>
 
         <div className="relative max-w-5xl mx-auto">
-          <div className="absolute left-6 lg:left-1/2 top-0 bottom-0 w-0.5 bg-gradient-to-b from-primary via-neon-green to-primary -translate-x-1/2" />
+          <div className="absolute left-6 lg:left-1/2 top-0 bottom-0 w-0.5 -translate-x-1/2 overflow-hidden">
+            <div className="w-full h-full bg-gradient-to-b from-primary via-neon-green to-primary" />
+            <div className="absolute top-0 left-0 w-full h-16 bg-gradient-to-b from-white/30 to-transparent animate-timeline-pulse" />
+          </div>
           
           <div className="space-y-12">
             {experiences.map((experience, index) => (

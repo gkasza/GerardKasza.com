@@ -30,15 +30,15 @@ export function Hero() {
       <div className="absolute bottom-1/4 right-1/4 w-40 h-40 md:w-80 md:h-80 bg-neon-green/5 rounded-full blur-2xl md:blur-3xl animate-pulse" style={{ animationDelay: '1s' }} />
       <div className="relative z-10 container mx-auto px-6 text-center">
         <motion.div
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.8 }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 1.0 }}
           className="flex flex-col items-center gap-8"
         >
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2, duration: 0.6 }}
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.3, duration: 0.8, ease: "easeOut" }}
             className="headshot-container"
           >
             <div className="pulse-ring" />
@@ -55,7 +55,7 @@ export function Hero() {
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.4, duration: 0.6 }}
+            transition={{ delay: 0.6, duration: 0.7 }}
             className="space-y-4"
           >
             <h1 className="font-heading text-fluid-hero font-bold tracking-tight whitespace-nowrap">
@@ -85,7 +85,7 @@ export function Hero() {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.6, duration: 0.6 }}
+            transition={{ delay: 3.5, duration: 0.6 }}
             className="flex flex-wrap items-center justify-center gap-4 mb-16"
           >
             <Button
@@ -113,7 +113,7 @@ export function Hero() {
           <motion.button
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ delay: 1.2, duration: 0.6 }}
+            transition={{ delay: 4.0, duration: 0.6 }}
             onClick={scrollToAbout}
             className="text-primary hover:text-neon-green transition-colors duration-300 cursor-pointer"
             aria-label="Scroll to About section"

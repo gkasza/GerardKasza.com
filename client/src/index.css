@@ -92,6 +92,53 @@
 
 /* .dark block removed — identical to :root since dark theme is always forced via <html class="dark"> */
 
+/* ===== DEEP SPACE THEME VARIANT ===== */
+/* Default is "midnight" (the existing dark theme). Deep-space shifts cooler/darker with purple accent. */
+[data-theme="deep-space"] {
+  --background: 230 15% 5%;
+  --foreground: 220 15% 88%;
+  --border: 230 12% 16%;
+  --card: 230 14% 8%;
+  --card-foreground: 220 12% 90%;
+  --primary: 200 100% 55%;
+  --primary-foreground: 230 15% 5%;
+  --muted: 230 12% 13%;
+  --muted-foreground: 220 10% 55%;
+  --accent: 230 15% 11%;
+  --accent-foreground: 220 12% 88%;
+  --neon-green: 160 100% 45%;
+  --neon-cyan: 200 100% 55%;
+  --input: 230 12% 20%;
+  --ring: 200 100% 55%;
+}
+
+[data-theme="deep-space"] .circuit-line-base {
+  stroke: hsl(200 100% 55%);
+}
+
+[data-theme="deep-space"] .circuit-line-energy {
+  stroke: hsl(200 100% 55%);
+}
+
+/* ===== TIMELINE PULSE ===== */
+@keyframes timeline-pulse {
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(800%); }
+}
+.animate-timeline-pulse {
+  animation: timeline-pulse 4s ease-in-out infinite;
+}
+
+/* ===== MICRO-INTERACTIONS ===== */
+/* Section heading accent words glow on hover */
+h2 .text-primary {
+  transition: text-shadow 0.3s ease, filter 0.3s ease;
+}
+h2:hover .text-primary {
+  text-shadow: 0 0 20px hsl(187 100% 50% / 0.4), 0 0 40px hsl(187 100% 50% / 0.2);
+  filter: brightness(1.15);
+}
+
 @layer base {
   * {
     @apply border-border;

@@ -118,8 +118,8 @@ export function Recognition() {
               {i > 0 && (
                 <div className="hidden md:block w-px h-12 bg-gradient-to-b from-transparent via-primary/25 to-transparent" />
               )}
-              <div className="text-center min-w-[120px]">
-                <div className="font-heading text-4xl md:text-5xl font-bold bg-gradient-to-br from-primary to-neon-green bg-clip-text text-transparent leading-none mb-1.5">
+              <div className="text-center min-w-[120px] group/stat">
+                <div className="font-heading text-4xl md:text-5xl font-bold bg-gradient-to-br from-primary to-neon-green bg-clip-text text-transparent leading-none mb-1.5 transition-transform duration-300 group-hover/stat:scale-110">
                   <CountUp
                     target={stat.target}
                     suffix={stat.suffix}
