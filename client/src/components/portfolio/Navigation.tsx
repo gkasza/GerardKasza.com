@@ -94,6 +94,7 @@ export function Navigation() {
               size="icon"
               className="md:hidden text-foreground"
               onClick={() => setIsMobileMenuOpen(true)}
+              aria-label="Open menu"
               data-testid="button-mobile-menu"
             >
               <Menu className="w-5 h-5" />

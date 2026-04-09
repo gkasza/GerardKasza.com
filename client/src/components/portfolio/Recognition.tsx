@@ -226,7 +226,7 @@ export function Recognition() {
                   <p className="font-heading text-[0.8rem] md:text-sm font-semibold text-foreground/85 leading-tight">
                     {item.label}
                   </p>
-                  <p className="text-[0.65rem] md:text-[0.7rem] text-muted-foreground/40 mt-0.5">
+                  <p className="text-[0.65rem] md:text-[0.7rem] text-muted-foreground/60 mt-0.5">
                     {item.meta}
                   </p>
                 </div>

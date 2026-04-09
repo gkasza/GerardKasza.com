@@ -57,7 +57,7 @@ export function Footer() {
               asChild
               data-testid="link-linkedin-footer"
             >
-              <a href="https://www.linkedin.com/in/gerard-kasza-0x0/" target="_blank" rel="me noopener noreferrer">
+              <a href="https://www.linkedin.com/in/gerard-kasza-0x0/" target="_blank" rel="me noopener noreferrer" aria-label="LinkedIn">
                 <Linkedin className="w-4 h-4" />
               </a>
             </Button>
@@ -67,7 +67,7 @@ export function Footer() {
               asChild
               data-testid="button-email-footer"
             >
-              <a href="mailto:gjkasza@gmail.com">
+              <a href="mailto:gjkasza@gmail.com" aria-label="Email">
                 <Mail className="w-4 h-4" />
               </a>
             </Button>
@@ -75,6 +75,7 @@ export function Footer() {
               variant="default"
               size="icon"
               onClick={scrollToTop}
+              aria-label="Scroll to top"
               data-testid="button-scroll-top"
             >
               <ArrowUp className="w-4 h-4" />

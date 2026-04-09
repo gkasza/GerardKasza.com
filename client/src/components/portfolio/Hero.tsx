@@ -58,7 +58,7 @@ export function Hero() {
             transition={{ delay: 0.6, duration: 0.7 }}
             className="space-y-4"
           >
-            <h1 className="font-heading text-fluid-hero font-bold tracking-tight whitespace-nowrap">
+            <h1 className="font-heading text-fluid-hero font-bold tracking-tight whitespace-nowrap" aria-label="Gerard Kasza">
               <DecodeName firstName="Gerard" lastName="Kasza" />
             </h1>
             {/* Differentiating tagline */}
