@@ -3,7 +3,7 @@ import { useEffect, useRef, useCallback } from "react";
 const SYMBOL_SETS = {
   crypto: {
     chars: [
-      "\u20BF", "\u20BF", "\u20BF", "\u20BF", "\u20BF", "\u20BF", "\u20BF", "\u20BF",
+      "\u20BF", "\u20BF", "\u20BF", "\u20BF", "\u20BF", "\u20BF",
       "\u039E", "\u039E", "\u039E", "\u039E",
       "\u25C8", "\u25C8",
       "\u039B",
@@ -12,7 +12,7 @@ const SYMBOL_SETS = {
     css: "char-crypto",
   },
   finance: {
-    chars: ["$", "$", "$", "$", "$", "$", "$", "$", "\u20AC", "\u00A3", "\u00A5", "%", "\u25B3"],
+    chars: ["$", "$", "$", "$", "\u20AC", "\u00A3", "\u00A5", "%", "\u25B3"],
     css: "char-finance",
   },
   tech: {
