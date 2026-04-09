@@ -183,9 +183,15 @@ export function Recognition() {
               recognized by the industry's leading wealth management publication for
               innovation in held-away asset intelligence.
             </p>
-            <span className="inline-flex items-center gap-1.5 mt-4 text-xs font-medium text-primary/60">
+            <a
+              href="https://www.wealthmanagement.com/financial-technology/the-future-of-advice-intelligent-signals-for-home-offices-advisors-and-consumers"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 mt-4 text-xs font-medium text-primary/60 hover:text-primary transition-colors"
+            >
               WealthManagement.com
-            </span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-3 h-3"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+            </a>
           </motion.div>
         </div>
 
