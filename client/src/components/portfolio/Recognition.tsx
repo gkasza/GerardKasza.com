@@ -215,7 +215,7 @@ export function Recognition() {
                 initial={{ opacity: 0 }}
                 animate={isInView ? { opacity: 1 } : {}}
                 transition={{ delay: 0.6 + i * 0.1, duration: 0.5 }}
-                className="bg-background hover:bg-card/40 transition-colors duration-300 p-5 flex items-center gap-4"
+                className="bg-background hover:bg-card/40 transition-colors duration-300 p-4 md:p-5 flex flex-col items-center text-center md:flex-row md:text-left gap-2.5 md:gap-4"
               >
                 <div
                   className={`w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 ${iconClasses}`}
@@ -223,10 +223,10 @@ export function Recognition() {
                   <Icon className="w-4 h-4" />
                 </div>
                 <div className="min-w-0">
-                  <p className="font-heading text-sm font-semibold text-foreground/85 truncate">
+                  <p className="font-heading text-[0.8rem] md:text-sm font-semibold text-foreground/85 leading-tight">
                     {item.label}
                   </p>
-                  <p className="text-[0.65rem] text-muted-foreground/40">
+                  <p className="text-[0.65rem] md:text-[0.7rem] text-muted-foreground/40 mt-0.5">
                     {item.meta}
                   </p>
                 </div>
