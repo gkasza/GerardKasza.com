@@ -126,7 +126,7 @@ export function Recognition() {
                     inView={statsInView}
                   />
                 </div>
-                <div className="text-xs font-medium text-muted-foreground/60 uppercase tracking-wider">
+                <div className="text-xs font-medium text-muted-foreground/75 uppercase tracking-wider">
                   {stat.label}
                 </div>
               </div>
@@ -152,7 +152,7 @@ export function Recognition() {
             <h3 className="font-heading text-xl font-semibold text-foreground mb-2.5 leading-tight">
               Back-to-Back Sales Leader of the Year
             </h3>
-            <p className="text-sm text-muted-foreground/60 leading-relaxed">
+            <p className="text-sm text-muted-foreground leading-relaxed">
               Two years running. Named 2023 Wealth Sales Leader of the Year, then
               2024 Yodlee Sales Leader of the Year — recognized for consistent top
               performance across enterprise banking, wealth, and fintech accounts.
@@ -178,7 +178,7 @@ export function Recognition() {
             <h3 className="font-heading text-xl font-semibold text-foreground mb-2.5 leading-tight">
               Featured on WealthManagement.com
             </h3>
-            <p className="text-sm text-muted-foreground/60 leading-relaxed">
+            <p className="text-sm text-muted-foreground leading-relaxed">
               Advisor Signals — a platform I built from concept to production — was
               recognized by the industry's leading wealth management publication for
               innovation in held-away asset intelligence.
@@ -226,7 +226,7 @@ export function Recognition() {
                   <p className="font-heading text-[0.8rem] md:text-sm font-semibold text-foreground/85 leading-tight">
                     {item.label}
                   </p>
-                  <p className="text-[0.65rem] md:text-[0.7rem] text-muted-foreground/60 mt-0.5">
+                  <p className="text-[0.65rem] md:text-[0.7rem] text-muted-foreground/75 mt-0.5">
                     {item.meta}
                   </p>
                 </div>
