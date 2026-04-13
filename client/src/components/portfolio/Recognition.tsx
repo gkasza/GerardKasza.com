@@ -12,16 +12,10 @@ const stats = [
 
 const achievements = [
   {
-    label: "Historic Recruiting Record",
-    meta: "2014 · Mutual of Omaha",
-    icon: Trophy,
-    color: "trophy" as const,
-  },
-  {
-    label: "Employee of the Year",
-    meta: "2018 · Envestnet Tamarac",
-    icon: Trophy,
-    color: "trophy" as const,
+    label: "Record Client Migration",
+    meta: "2026 · Envestnet Yodlee",
+    icon: Activity,
+    color: "deal" as const,
   },
   {
     label: "2nd-Largest Wealth Deal Ever",
@@ -30,10 +24,16 @@ const achievements = [
     color: "deal" as const,
   },
   {
-    label: "Record Client Migration",
-    meta: "2026 · Envestnet Yodlee",
-    icon: Activity,
-    color: "deal" as const,
+    label: "Employee of the Year",
+    meta: "2018 · Envestnet Tamarac",
+    icon: Trophy,
+    color: "trophy" as const,
+  },
+  {
+    label: "Historic Recruiting Record",
+    meta: "2014 · Mutual of Omaha",
+    icon: Trophy,
+    color: "trophy" as const,
   },
 ];
 
