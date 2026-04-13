@@ -179,9 +179,9 @@ export function Recognition() {
               Featured on WealthManagement.com
             </h3>
             <p className="text-sm text-muted-foreground leading-relaxed">
-              Advisor Signals — a platform I built from concept to production — was
-              recognized by the industry's leading wealth management publication for
-              innovation in held-away asset intelligence.
+              Advisor Signals — a concept I originated and prototyped, later developed
+              into Yodlee Advisor Insights — was recognized by the industry's leading
+              wealth management publication for innovation in held-away asset intelligence.
             </p>
             <a
               href="https://www.wealthmanagement.com/financial-technology/the-future-of-advice-intelligent-signals-for-home-offices-advisors-and-consumers"
