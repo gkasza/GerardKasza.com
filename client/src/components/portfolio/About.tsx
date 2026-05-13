@@ -115,7 +115,7 @@ export function About() {
           <div className="space-y-6">
             <AboutCard title="Background" index={0}>
               <p>
-                I'm an accomplished executive blending sales leadership with technical insight across wealth management, banking, crypto, and fintech. Through closing multimillion-dollar enterprise software deals with premier Fortune 500 enterprises and industry giants, negotiating complex contracts, providing consultative guidance on cutting-edge implementations, and leading cross-functional transformations, I've helped these organizations strengthen their digital capabilities and realize extraordinary, quantifiable growth.
+                I'm an accomplished executive blending sales leadership with technical insight across wealth management, banking, credit, crypto, and fintech. Through closing multimillion-dollar enterprise software deals with premier Fortune 500 enterprises and industry giants, negotiating complex contracts, providing consultative guidance on cutting-edge implementations, and leading cross-functional transformations, I've helped these organizations strengthen their digital capabilities and realize extraordinary, quantifiable growth.
               </p>
             </AboutCard>
 

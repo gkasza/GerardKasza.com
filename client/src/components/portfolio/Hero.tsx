@@ -79,6 +79,8 @@ export function Hero() {
                 <span className="text-primary">Fintech</span>
                 <span className="text-muted-foreground/50"> • </span>
                 <span className="text-primary">Crypto</span>
+                <span className="text-muted-foreground/50"> • </span>
+                <span className="text-primary">Credit</span>
               </p>
             </div>
           </motion.div>
