@@ -37,7 +37,6 @@ const PrivateProjectsCard = forwardRef<HTMLDivElement, { index: number; onReques
         layout
         initial={{ opacity: 0, y: 30, scale: 0.95 }}
         animate={isInView ? { opacity: 1, y: 0, scale: 1 } : {}}
-        exit={{ opacity: 0, scale: 0.95, transition: { duration: 0.2 } }}
         transition={{ delay: index * 0.1, duration: 0.4 }}
         className="group backdrop-blur-md bg-card/60 border border-border rounded-lg overflow-hidden hover:border-primary/50 transition-all duration-300 cursor-pointer"
         data-testid="project-card-private"
@@ -171,7 +170,6 @@ const ProjectCard = forwardRef<HTMLDivElement, { project: typeof projects[0]; in
           layout
           initial={{ opacity: 0, y: 30, scale: 0.95 }}
           animate={isInView ? { opacity: 1, y: 0, scale: 1 } : {}}
-          exit={{ opacity: 0, scale: 0.95, transition: { duration: 0.2 } }}
           transition={{ delay: index * 0.1, duration: 0.4 }}
           className={`group backdrop-blur-md bg-card/60 border border-border rounded-lg overflow-hidden hover:border-primary/50 transition-all duration-300 ${hasLink ? 'cursor-pointer' : ''}`}
           data-testid={`project-card-${project.id}`}
@@ -297,14 +295,13 @@ export function Projects() {
           layout
           className="grid md:grid-cols-2 lg:grid-cols-3 gap-6"
         >
-          <AnimatePresence>
-            {filteredProjects.map((project, index) => (
-              <ProjectCard key={project.id} project={project} index={index} />
-            ))}
-            {activeCategory === "All" && (
-              <PrivateProjectsCard key="private-projects" index={filteredProjects.length} onRequestAccess={() => setShowLogin(true)} />
-            )}
-          </AnimatePresence>
+          {/* No AnimatePresence: framer-motion 11.13 drops re-entering cards when switching filters */}
+          {filteredProjects.map((project, index) => (
+            <ProjectCard key={project.id} project={project} index={index} />
+          ))}
+          {activeCategory === "All" && (
+            <PrivateProjectsCard key="private-projects" index={filteredProjects.length} onRequestAccess={() => setShowLogin(true)} />
+          )}
         </motion.div>
       </div>
 
