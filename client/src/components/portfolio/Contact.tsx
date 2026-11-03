@@ -80,7 +80,7 @@ export function Contact() {
           </h2>
           <div className="w-24 h-1 bg-gradient-to-r from-primary to-neon-green mx-auto rounded-full mb-4" />
           <p className="text-muted-foreground max-w-2xl mx-auto">
-            Ready to discuss how we can work together? Let's connect and explore opportunities.
+            Partnerships, product ideas, or a conversation worth having. Let's connect.
           </p>
         </motion.div>
 

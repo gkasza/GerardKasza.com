@@ -72,14 +72,14 @@ export function DecodeName({ firstName, lastName }: DecodeNameProps) {
       // Invisible sizing text
       const sizer = document.createElement("span");
       sizer.className = "dn-sizer";
-      sizer.textContent = word[i];
+      sizer.dataset.c = word[i];
       span.appendChild(sizer);
 
       // Scramble character (visible during decode)
       const scrambleEl = document.createElement("span");
       scrambleEl.className = "dn-scramble-char";
       const sym = randomSymbol();
-      scrambleEl.textContent = sym.char;
+      scrambleEl.dataset.c = sym.char;
       scrambleEl.classList.add(sym.css);
       span.appendChild(scrambleEl);
 
@@ -101,7 +101,7 @@ export function DecodeName({ firstName, lastName }: DecodeNameProps) {
     const sym = randomSymbol();
     const particle = document.createElement("span");
     particle.className = "dn-particle";
-    particle.textContent = sym.char;
+    particle.dataset.c = sym.char;
     particle.style.color = particleColor(sym.css);
 
     const rect = letter.getBoundingClientRect();
@@ -124,7 +124,7 @@ export function DecodeName({ firstName, lastName }: DecodeNameProps) {
 
       const interval = setInterval(() => {
         const sym = randomSymbol();
-        scrambleEl.textContent = sym.char;
+        scrambleEl.dataset.c = sym.char;
         scrambleEl.className = "dn-scramble-char " + sym.css;
         if (count % 2 === 0) spawnParticle(letter);
         count++;
@@ -152,7 +152,7 @@ export function DecodeName({ firstName, lastName }: DecodeNameProps) {
 
       hoverInterval = setInterval(() => {
         const sym = randomSymbol();
-        scrambleEl.textContent = sym.char;
+        scrambleEl.dataset.c = sym.char;
         scrambleEl.className = "dn-scramble-char " + sym.css;
       }, 70);
     });
@@ -167,7 +167,7 @@ export function DecodeName({ firstName, lastName }: DecodeNameProps) {
       let resolveCount = 0;
       const resolveInterval = setInterval(() => {
         const sym = randomSymbol();
-        scrambleEl.textContent = sym.char;
+        scrambleEl.dataset.c = sym.char;
         scrambleEl.className = "dn-scramble-char " + sym.css;
         resolveCount++;
         if (resolveCount >= 3) {
@@ -272,7 +272,7 @@ export function DecodeName({ firstName, lastName }: DecodeNameProps) {
       const glitchSets = [SYMBOL_SETS.crypto, SYMBOL_SETS.finance];
       const set = glitchSets[Math.floor(Math.random() * glitchSets.length)];
       const char = set.chars[Math.floor(Math.random() * set.chars.length)];
-      scrambleEl.textContent = char;
+      scrambleEl.dataset.c = char;
       scrambleEl.className = "dn-scramble-char " + set.css;
       scrambleEl.style.display = "";
       realEl.classList.remove("dn-show");
@@ -365,7 +365,7 @@ export function DecodeName({ firstName, lastName }: DecodeNameProps) {
   return (
     <div className="dn-name-wrapper" ref={wrapperRef}>
       <span className="dn-word" ref={firstRef} />
-      <span className="dn-word-space" />
+      <span className="dn-word-space">{" "}</span>
       <span className="dn-word" ref={lastRef} />
       <div className="dn-scan-line" />
       <div className="dn-underline-trace" ref={underlineRef} />

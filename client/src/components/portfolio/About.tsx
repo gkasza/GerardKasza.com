@@ -2,17 +2,20 @@ import { motion } from "framer-motion";
 import { useInView } from "framer-motion";
 import { useRef } from "react";
 import { TrendingUp, Code, Users, Wallet, Sparkles, Lightbulb, Target, Layers, Compass } from "lucide-react";
+import { profile } from "@shared/profile";
 
-const skills = [
-  { name: "Financial Services Ecosystem Navigation", years: 17, icon: Compass },
-  { name: "Strategic Account Expansion", years: 12, icon: Target },
-  { name: "Partnership Strategy & Development", years: 10, icon: Users },
-  { name: "Technical Advisory & Engineering", years: 10, icon: Code },
-  { name: "Crypto/Blockchain Experience", years: 9, icon: Wallet },
-  { name: "Cross-Functional Project Management", years: 9, icon: Layers },
-  { name: "Innovation & Future-Casting", years: 8, icon: Lightbulb },
-  { name: "Go-to-Market Leadership", years: 7, icon: TrendingUp },
-];
+const skillIcons: Record<string, typeof Compass> = {
+  "Financial Services Ecosystem Navigation": Compass,
+  "Strategic Account Expansion": Target,
+  "Partnership Strategy & Development": Users,
+  "Technical Advisory & Engineering": Code,
+  "Crypto/Blockchain Experience": Wallet,
+  "Cross-Functional Project Management": Layers,
+  "Innovation & Future-Casting": Lightbulb,
+  "Go-to-Market Leadership": TrendingUp,
+};
+
+const skills = profile.skills.map((s) => ({ ...s, icon: skillIcons[s.name] ?? Sparkles }));
 
 const maxYears = Math.max(...skills.map(s => s.years));
 
@@ -114,21 +117,15 @@ export function About() {
         <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-start overflow-hidden">
           <div className="space-y-6">
             <AboutCard title="Background" index={0}>
-              <p>
-                I'm an accomplished executive blending sales leadership with technical insight across wealth management, banking, credit, crypto, and fintech. Through closing multimillion-dollar enterprise software deals with premier Fortune 500 enterprises and industry giants, negotiating complex contracts, providing consultative guidance on cutting-edge implementations, and leading cross-functional transformations, I've helped these organizations strengthen their digital capabilities and realize extraordinary, quantifiable growth.
-              </p>
+              <p>{profile.summary[0]}</p>
             </AboutCard>
 
             <AboutCard title="What I Do" index={1}>
-              <p>
-                I excel at identifying and capitalizing on opportunities where cutting-edge technology meets strategic business priorities. From designing and executing go-to-market frameworks for SaaS platforms, providing deep consultative guidance on product-market fit in wealth management, fintech, and crypto environments, to engineering AI-driven MVPs, I bring a rare fusion of technical insight, enterprise sales leadership, and innovative problem-solving to transform challenges into measurable growth.
-              </p>
+              <p>{profile.summary[1]}</p>
             </AboutCard>
 
             <AboutCard title="Passions" index={2}>
-              <p>
-                What keeps me energized beyond deals and growth is a deep fascination with tomorrow's technologies and the incentives shaping them. I was early into DeFi during 2020's summer surge and started leveraging AI by 2022, well ahead of the curve. I gravitate toward circles of bold thinkers, dreamers, and relentless builders, where ideas accelerate. I stay ahead by curating beta alerts, scouring breakthroughs, and hands-on testing across AI, crypto, finance systems, robotics, and behavioral economics. Few things excite me more than the belief that everyday people will soon have AI advisors capable of rivaling and elevating traditional financial guidance. As someone who vibes seamlessly with engineers and C-suite leaders alike, I see this blend as my edge: understanding products deeply enough to build, sell, and scale them in a fast-evolving world.
-              </p>
+              <p>{profile.summary[2]}</p>
             </AboutCard>
           </div>
 

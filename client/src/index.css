@@ -308,6 +308,13 @@ h2:hover .text-primary {
   visibility: hidden;
 }
 
+/* Decorative glyphs render via attr() so they stay out of the h1's indexable text */
+.dn-sizer::before,
+.dn-scramble-char::before,
+.dn-particle::before {
+  content: attr(data-c);
+}
+
 .dn-letter .dn-scramble-char {
   position: absolute;
   top: 0;

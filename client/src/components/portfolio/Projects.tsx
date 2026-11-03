@@ -5,6 +5,7 @@ import { ExternalLink, Layers, LineChart, Lock, Mail, ShieldCheck, Sparkles, Tar
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { TiltCard } from "./TiltCard";
+import { profile, type Project } from "@shared/profile";
 import advisorSignalsImg from "@assets/advisor-signals.webp";
 import portfloImg from "@assets/portflo-screenshot.webp";
 import jamesKaszaImg from "@assets/image_1772987645677.webp";
@@ -12,55 +13,14 @@ import armoredGarageImg from "@assets/armored-garage-door.webp";
 
 const categories = ["All", "Wealth", "Crypto", "Sports", "Local"];
 
-const projects = [
-  {
-    id: 1,
-    title: "Advisor Signals [Public]",
-    category: "Wealth",
-    description: "A prototype platform I launched in April 2025 to automatically detect and act on real-time client financial events across all aggregated external accounts, enabling hyper-personalized insights and proactive engagement opportunities. It later evolved into Yodlee Advisor Insights, now used by 3 of the top 10 wealth management firms and thousands of financial advisors. All data is fictitious and for demo only.",
-    featuredText: "As featured on",
-    featuredSite: "WealthManagement.com",
-    featuredLink: "https://www.wealthmanagement.com/financial-technology/the-future-of-advice-intelligent-signals-for-home-offices-advisors-and-consumers",
-    tags: ["Real-Time Signals", "Wealth Intelligence", "Advisor Tools", "Open Banking"],
-    icon: LineChart,
-    highlight: "Top 10 Wealth",
-    link: "https://held-away.com/",
-    image: advisorSignalsImg,
-  },
-  {
-    id: 2,
-    title: "PortFlo Crypto DApp [Public]",
-    category: "Crypto",
-    description: "I built PortFlo, a crypto DApp for advanced crypto portfolio management. Connect any Web3 wallet to view unified analytics across Ethereum, real-time market data, P&L, custom charts, and in-depth asset breakdowns. It also features an on-chain analytics query agent. Launched in August 2025, it's password-free, includes a demo mode, and is optimized for desktop and mobile.",
-    tags: ["Web3", "Ethereum", "DeFi", "Portfolio Analytics", "AI Onchain Query"],
-    icon: Layers,
-    highlight: "Crypto App",
-    link: "https://portflo.xyz/",
-    image: portfloImg,
-  },
-  {
-    id: 3,
-    title: "JamesKasza.com [Public]",
-    category: "Sports",
-    description: "I designed and built a professional website for elite golf coach James Kasza, known as 'That Golf Guy.' He coaches NFL, NBA, and soccer pros, professional athletes, and junior golfers, many of whom have earned D1 scholarships. The site features private coaching, virtual lessons, corporate golf clinics, and motivational speaking services, all optimized for a premium client experience.",
-    tags: ["Pro Athletes", "Golf Coaching", "D1 Juniors", "Corporate Events"],
-    icon: Target,
-    highlight: "Elite Sports",
-    link: "https://jameskasza.com/",
-    image: jamesKaszaImg,
-  },
-  {
-    id: 4,
-    title: "Armored Garage Door [Public]",
-    category: "Local",
-    description: "I built this site for my buddy JC Antunez, a veteran-owned garage door company serving Raleigh and the Triangle. We designed a trust-first local experience: an interactive 'Door Doctor' that triages symptoms to likely cause, safe next step, and typical cost; a live Door Designer that previews style, color, and windows with a ballpark installed price; transparent pricing (rare for the trade); and heavy local SEO. Mobile-first, built to convert the 2 a.m. emergency caller.",
-    tags: ["Local SEO", "Veteran-Owned", "Interactive UX", "Lead Gen"],
-    icon: ShieldCheck,
-    highlight: "Local SEO",
-    link: "https://armoredgaragedoorraleigh.com/",
-    image: armoredGarageImg,
-  },
-];
+const visuals: Record<number, { icon: typeof LineChart; image: string }> = {
+  1: { icon: LineChart, image: advisorSignalsImg },
+  2: { icon: Layers, image: portfloImg },
+  3: { icon: Target, image: jamesKaszaImg },
+  4: { icon: ShieldCheck, image: armoredGarageImg },
+};
+
+const projects = (profile.projects as Project[]).map((p) => ({ ...p, ...(visuals[p.id] ?? { icon: Sparkles, image: "" }) }));
 
 const PrivateProjectsCard = forwardRef<HTMLDivElement, { index: number; onRequestAccess: () => void }>(
   function PrivateProjectsCard({ index, onRequestAccess }, forwardedRef) {

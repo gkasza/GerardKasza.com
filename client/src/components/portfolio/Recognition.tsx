@@ -2,40 +2,16 @@ import { motion } from "framer-motion";
 import { useInView } from "framer-motion";
 import { useRef, useEffect, useState, useCallback } from "react";
 import { Trophy, Newspaper, DollarSign, Activity } from "lucide-react";
+import { profile } from "@shared/profile";
 
-const stats = [
-  { target: 42, suffix: "%", label: "YoY Revenue Growth" },
-  { target: 124, suffix: "%", label: "Quota Attainment" },
-  { target: 50, suffix: "+", label: "Enterprise Projects" },
-  { target: 17, suffix: "", label: "Years in FinServ" },
-];
+const stats = profile.stats;
 
-const achievements = [
-  {
-    label: "Record Client Migration",
-    meta: "2026 · Envestnet Yodlee",
-    icon: Activity,
-    color: "deal" as const,
-  },
-  {
-    label: "2nd-Largest Wealth Deal Ever",
-    meta: "2025 · Envestnet Yodlee",
-    icon: DollarSign,
-    color: "deal" as const,
-  },
-  {
-    label: "Employee of the Year",
-    meta: "2018 · Envestnet Tamarac",
-    icon: Trophy,
-    color: "trophy" as const,
-  },
-  {
-    label: "Historic Recruiting Record",
-    meta: "2014 · Mutual of Omaha",
-    icon: Trophy,
-    color: "trophy" as const,
-  },
-];
+const achievements = profile.milestones.map((m) => ({
+  label: m.label,
+  meta: m.meta,
+  icon: m.kind === "deal" ? (m.label.includes("Deal") ? DollarSign : Activity) : Trophy,
+  color: m.kind === "deal" ? ("deal" as const) : ("trophy" as const),
+}));
 
 function CountUp({
   target,

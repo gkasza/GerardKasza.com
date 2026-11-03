@@ -2,87 +2,11 @@ import { motion } from "framer-motion";
 import { useInView } from "framer-motion";
 import { useRef } from "react";
 import { Briefcase, Building, TrendingUp, Award } from "lucide-react";
+import { profile } from "@shared/profile";
 
-const experiences = [
-  {
-    id: 1,
-    title: "Strategic Partnerships - Banking, Wealth & Fintech",
-    company: "Array",
-    companyUrl: "https://array.com",
-    location: "Raleigh, NC",
-    period: "April 2026 - Present",
-    achievements: [
-      "Lead strategic partnerships across banking, wealth, fintech, crypto, and credit — bringing Array's super-aggregator account linking platform, embedded credit, identity, and financial wellness products to financial institutions and digital brands.",
-      "Partner with banks, credit unions, and fintechs to embed Array's modular consumer experiences — accelerating speed-to-market, deepening engagement, and unlocking new revenue streams.",
-      "Build executive-level relationships across the financial ecosystem, translating Array's API-first platform into measurable outcomes for partners and their end customers."
-    ],
-    icon: TrendingUp,
-  },
-  {
-    id: 2,
-    title: "Director, Strategic Client Partnerships",
-    company: "Envestnet Yodlee",
-    companyUrl: "https://www.linkedin.com/company/yodlee",
-    location: "Raleigh, NC",
-    period: "2021 - April 2026",
-    achievements: [
-      "Secured top-10 and top-20 US broker-dealer clients (by AUM; second-largest wealth deal in company history), projected to generate $25M+ over 5 years combined, with strong upsell potential across bank, credit, and insurance relationships.",
-      "Grew revenue from $7.6M to $9.2M (124% of target), with 42% and 57% YoY growth at two top-15 US wealth firms.",
-      "Earned 2023 Wealth Sales Leader of the Year and 2024 Yodlee Sales Leader of the Year awards for consistent top performance.",
-      "Oversaw largest Wealth Management and Bank logos; authored and secured funding for the Advisor Acceleration Program (GTM to double wealth usage, launched Q1 2025).",
-      "Created Advisor Insights initiative: hyper-personalized, anticipatory advice engine for AUM growth/retention and engagement (v0 prototype: held-away.com, April 2025).",
-      "Led GTM for Crypto & Blockchain Strategies; co-authored Yodlee Onchain in 2022 (onchain transaction/holdings indexing) and Crypto Digital Wallet prototype."
-    ],
-    icon: TrendingUp,
-  },
-  {
-    id: 3,
-    title: "Technical Product Consultant",
-    company: "Envestnet Tamarac",
-    companyUrl: "https://www.linkedin.com/company/envestnet-tamarac-inc",
-    location: "Raleigh, NC",
-    period: "2016 - 2021",
-    achievements: [
-      "Served as technical relationship manager for the industry's largest RIAs and institutional wealth firms, bridging product engineering, sales, and clients on complex platform implementations.",
-      "Led 50+ enterprise onboarding projects and transformations, overseeing migrations of billions in AUM with seamless execution and high adoption.",
-      "Delivered executive solution presentations, proof-of-concepts, and technical consultations to drive client value and expansion.",
-      "Influenced strategic product roadmap by advocating aggregated customer feedback to engineering and product leaders.",
-      "Earned 2018 Employee Achievement Award (peer-voted) for excellence in teamwork, innovation, and productivity."
-    ],
-    icon: Building,
-  },
-  {
-    id: 4,
-    title: "Sales Training & Recruiting Manager",
-    company: "Mutual of Omaha",
-    companyUrl: "https://www.linkedin.com/company/mutual-of-omaha/",
-    location: "Omaha, Nebraska",
-    period: "2014 - 2016",
-    achievements: [
-      "Managed recruiting efforts and goals for 10 offices across VA, MD, WV, KY, and OH, training and developing agents to become licensed Financial Advisors (including FINRA Series 6, 63, and securities licensing).",
-      "Met annual recruiting goal in just 10 months, generating $478K in additional revenue through new advisor hires.",
-      "Achieved 2014 Company Recruiting Record Year, onboarding 73 new advisors to the region.",
-      "Trained Financial Advisors extensively in compliance, needs-based sales practices, marketing initiatives, consultative selling, prospecting, referral strategies, and product knowledge.",
-      "Doubled candidate sourcing output by redesigning Boolean search strategies across multiple systems."
-    ],
-    icon: Briefcase,
-  },
-  {
-    id: 5,
-    title: "Small Business Banking Officer",
-    company: "Truist",
-    companyUrl: "https://www.linkedin.com/company/truistfinancialcorporation",
-    location: "Charlotte, NC",
-    period: "2010 - 2014",
-    achievements: [
-      "Promoted to Small Business Banking Officer based on performance in personal banking role.",
-      "Managed small business client relationships and sold financial products including lending and deposits.",
-      "Completed BB&T Leadership Development Program (2012) and enterprise sales training.",
-      "Focused on consultative sales and relationship management to support client growth."
-    ],
-    icon: Award,
-  },
-];
+const icons = [TrendingUp, TrendingUp, Building, Briefcase, Award];
+
+const experiences = profile.experiences.map((e, i) => ({ ...e, id: i + 1, icon: icons[i] ?? Briefcase }));
 
 function renderAchievement(text: string) {
   // Bold key metrics: $amounts, percentages, and counts with units (e.g. "73 new advisors", "50+ enterprise")
@@ -227,7 +151,7 @@ export function Timeline() {
             Professional <span className="text-primary">Journey</span>
           </h2>
           <p className="text-muted-foreground max-w-2xl mx-auto">
-            A decade of driving growth in fintech, banking, crypto, and wealth management
+            15+ years driving growth across wealth management, banking, fintech, and crypto
           </p>
         </motion.div>
 
