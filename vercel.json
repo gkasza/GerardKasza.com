@@ -3,6 +3,12 @@
   "outputDirectory": "dist/public",
   "redirects": [
     {
+      "source": "/",
+      "has": [{ "type": "host", "value": "www.gerardkasza.com" }],
+      "destination": "https://gerardkasza.com/",
+      "permanent": true
+    },
+    {
       "source": "/:path*",
       "has": [{ "type": "host", "value": "www.gerardkasza.com" }],
       "destination": "https://gerardkasza.com/:path*",
