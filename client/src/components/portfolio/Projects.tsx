@@ -1,6 +1,6 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { useInView } from "framer-motion";
-import { useRef, useState, forwardRef } from "react";
+import { useCallback, useEffect, useRef, useState, forwardRef } from "react";
 import { ExternalLink, Layers, LineChart, Lock, Mail, ShieldCheck, Sparkles, Target } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -41,6 +41,11 @@ const PrivateProjectsCard = forwardRef<HTMLDivElement, { index: number; onReques
         className="group backdrop-blur-md bg-card/60 border border-border rounded-lg overflow-hidden hover:border-primary/50 transition-all duration-300 cursor-pointer"
         data-testid="project-card-private"
         onClick={onRequestAccess}
+        onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onRequestAccess(); } }}
+        role="button"
+        tabIndex={0}
+        aria-haspopup="dialog"
+        aria-label="More projects: request access"
       >
         <div className="relative h-32 bg-gradient-to-br from-primary/10 via-card to-neon-green/5 flex items-center justify-center overflow-hidden">
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(0,217,255,0.1),transparent_70%)]" />
@@ -79,6 +84,20 @@ const PrivateProjectsCard = forwardRef<HTMLDivElement, { index: number; onReques
 );
 
 function RequestAccessModal({ show, onClose }: { show: boolean; onClose: () => void }) {
+  const closeRef = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    if (!show) return;
+    const opener = document.activeElement as HTMLElement | null;
+    closeRef.current?.focus();
+    const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") onClose(); };
+    document.addEventListener("keydown", onKey);
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      opener?.focus();
+    };
+  }, [show, onClose]);
+
   return (
     <AnimatePresence>
       {show && (
@@ -98,6 +117,9 @@ function RequestAccessModal({ show, onClose }: { show: boolean; onClose: () => v
             transition={{ duration: 0.3 }}
             className="w-full max-w-sm bg-card border border-border rounded-lg p-6 space-y-5"
             onClick={(e) => e.stopPropagation()}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="request-access-title"
           >
             <div className="text-center space-y-2">
               <div className="flex justify-center">
@@ -105,7 +127,7 @@ function RequestAccessModal({ show, onClose }: { show: boolean; onClose: () => v
                   <Lock className="w-5 h-5 text-primary" />
                 </div>
               </div>
-              <h3 className="font-heading text-lg font-semibold text-foreground">Request Access</h3>
+              <h3 id="request-access-title" className="font-heading text-lg font-semibold text-foreground">Request Access</h3>
               <p className="text-muted-foreground text-sm">
                 These projects are private. Reach out and I'll be happy to walk you through demos and discuss ideas.
               </p>
@@ -130,6 +152,7 @@ function RequestAccessModal({ show, onClose }: { show: boolean; onClose: () => v
                 Connect on LinkedIn
               </a>
               <button
+                ref={closeRef}
                 type="button"
                 onClick={onClose}
                 className="w-full px-4 py-2 text-muted-foreground/60 text-sm hover:text-muted-foreground transition-colors"
@@ -249,6 +272,7 @@ export function Projects() {
   const isInView = useInView(ref, { once: true, margin: "-100px" });
   const [activeCategory, setActiveCategory] = useState("All");
   const [showLogin, setShowLogin] = useState(false);
+  const closeModal = useCallback(() => setShowLogin(false), []);
 
   const filteredProjects = activeCategory === "All" 
     ? projects 
@@ -305,7 +329,7 @@ export function Projects() {
         </motion.div>
       </div>
 
-      <RequestAccessModal show={showLogin} onClose={() => setShowLogin(false)} />
+      <RequestAccessModal show={showLogin} onClose={closeModal} />
     </section>
   );
 }

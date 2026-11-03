@@ -37,12 +37,12 @@ export function Footer() {
           </div>
 
           {/* Center — Quick Links */}
-          <div className="flex flex-wrap justify-center gap-x-6 gap-y-2">
+          <div className="flex flex-wrap justify-center gap-x-4 -my-2">
             {quickLinks.map((link) => (
               <button
                 key={link.label}
                 onClick={() => handleNavClick(link.href)}
-                className="text-sm text-muted-foreground/60 hover:text-primary transition-colors"
+                className="text-sm text-muted-foreground/60 hover:text-primary transition-colors py-2 px-1"
               >
                 {link.label}
               </button>

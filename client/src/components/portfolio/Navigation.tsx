@@ -54,14 +54,15 @@ export function Navigation() {
             <div className="flex items-center gap-3">
               <button
                 onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-                className="font-heading text-lg font-bold text-foreground hover:text-primary transition-colors"
+                className="font-heading text-lg font-bold text-foreground hover:text-primary transition-colors p-1.5 -m-1.5"
+                aria-label="Back to top"
                 data-testid="link-logo"
               >
                 G<span className="text-primary">K</span>
               </button>
               <button
                 onClick={toggleTheme}
-                className="text-muted-foreground/40 hover:text-primary transition-colors p-1"
+                className="text-muted-foreground/40 hover:text-primary transition-colors p-2.5 -m-1.5"
                 aria-label={`Switch to ${theme === "midnight" ? "deep space" : "midnight"} theme`}
                 data-testid="button-theme-toggle"
               >

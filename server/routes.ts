@@ -21,9 +21,10 @@ export async function registerRoutes(
       
       // Send email notification if Resend is configured
       if (resend) {
-        await resend.emails.send({
+        const { error } = await resend.emails.send({
           from: "onboarding@resend.dev",
           to: "gjkasza@gmail.com",
+          replyTo: validatedData.email,
           subject: `New Contact Form Message from ${validatedData.name.replace(/[\r\n]+/g, " ")}`,
           html: `
             <h2>New Contact Form Submission</h2>
@@ -34,6 +35,7 @@ export async function registerRoutes(
             <p>${escapeHtml(validatedData.message).replace(/\n/g, "<br>")}</p>
           `,
         });
+        if (error) throw new Error(`Resend: ${error.message}`);
       } else {
         console.log("Resend not configured - email notification skipped");
       }

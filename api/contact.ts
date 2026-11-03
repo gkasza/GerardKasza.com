@@ -20,21 +20,30 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   try {
     const data = contactSchema.parse(req.body);
 
-    if (process.env.RESEND_API_KEY) {
-      const resend = new Resend(process.env.RESEND_API_KEY);
-      await resend.emails.send({
-        from: "onboarding@resend.dev",
-        to: "gjkasza@gmail.com",
-        subject: `New Contact Form Message from ${data.name.replace(/[\r\n]+/g, " ")}`,
-        html: `
-          <h2>New Contact Form Submission</h2>
-          <p><strong>Name:</strong> ${escapeHtml(data.name)}</p>
-          <p><strong>Email:</strong> ${escapeHtml(data.email)}</p>
-          <p><strong>Subject:</strong> ${escapeHtml(data.subject || "No subject")}</p>
-          <p><strong>Message:</strong></p>
-          <p>${escapeHtml(data.message).replace(/\n/g, "<br>")}</p>
-        `,
-      });
+    if (!process.env.RESEND_API_KEY) {
+      console.error("Contact form error: RESEND_API_KEY is not set");
+      return res.status(500).json({ success: false, error: "Failed to send message" });
+    }
+
+    const resend = new Resend(process.env.RESEND_API_KEY);
+    const { error } = await resend.emails.send({
+      from: "onboarding@resend.dev",
+      to: "gjkasza@gmail.com",
+      replyTo: data.email,
+      subject: `New Contact Form Message from ${data.name.replace(/[\r\n]+/g, " ")}`,
+      html: `
+        <h2>New Contact Form Submission</h2>
+        <p><strong>Name:</strong> ${escapeHtml(data.name)}</p>
+        <p><strong>Email:</strong> ${escapeHtml(data.email)}</p>
+        <p><strong>Subject:</strong> ${escapeHtml(data.subject || "No subject")}</p>
+        <p><strong>Message:</strong></p>
+        <p>${escapeHtml(data.message).replace(/\n/g, "<br>")}</p>
+      `,
+    });
+
+    if (error) {
+      console.error("Contact form Resend error:", error);
+      return res.status(500).json({ success: false, error: "Failed to send message" });
     }
 
     return res.status(201).json({ success: true, message: "Message sent successfully" });
