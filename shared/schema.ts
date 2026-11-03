@@ -26,9 +26,11 @@ export const contactMessages = pgTable("contact_messages", {
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
-export const insertContactMessageSchema = createInsertSchema(contactMessages).omit({
-  id: true,
-  createdAt: true,
+export const insertContactMessageSchema = z.object({
+  name: z.string().trim().min(1, "Please enter your name").max(100, "Name is too long"),
+  email: z.string().trim().email("Please enter a valid email address").max(200, "Email is too long"),
+  subject: z.string().trim().max(200, "Subject is too long"),
+  message: z.string().trim().min(1, "Please enter a message").max(5000, "Message is too long (5,000 characters max)"),
 });
 
 export type InsertContactMessage = z.infer<typeof insertContactMessageSchema>;

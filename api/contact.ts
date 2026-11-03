@@ -3,11 +3,14 @@ import { z } from "zod";
 import { Resend } from "resend";
 
 const contactSchema = z.object({
-  name: z.string().min(1),
-  email: z.string().email(),
-  subject: z.string(),
-  message: z.string().min(1),
+  name: z.string().trim().min(1).max(100),
+  email: z.string().trim().email().max(200),
+  subject: z.string().trim().max(200),
+  message: z.string().trim().min(1).max(5000),
 });
+
+const escapeHtml = (s: string) =>
+  s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;");
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method !== "POST") {
@@ -22,14 +25,14 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       await resend.emails.send({
         from: "onboarding@resend.dev",
         to: "gjkasza@gmail.com",
-        subject: `New Contact Form Message from ${data.name}`,
+        subject: `New Contact Form Message from ${data.name.replace(/[\r\n]+/g, " ")}`,
         html: `
           <h2>New Contact Form Submission</h2>
-          <p><strong>Name:</strong> ${data.name}</p>
-          <p><strong>Email:</strong> ${data.email}</p>
-          <p><strong>Subject:</strong> ${data.subject || "No subject"}</p>
+          <p><strong>Name:</strong> ${escapeHtml(data.name)}</p>
+          <p><strong>Email:</strong> ${escapeHtml(data.email)}</p>
+          <p><strong>Subject:</strong> ${escapeHtml(data.subject || "No subject")}</p>
           <p><strong>Message:</strong></p>
-          <p>${data.message.replace(/\n/g, "<br>")}</p>
+          <p>${escapeHtml(data.message).replace(/\n/g, "<br>")}</p>
         `,
       });
     }

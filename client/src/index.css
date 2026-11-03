@@ -473,9 +473,12 @@ h2:hover .text-primary {
 
 .crypto-ticker-track {
   display: flex;
-  gap: 2rem;
-  animation: ticker-scroll 20s linear infinite;
+  animation: ticker-scroll 45s linear infinite;
   white-space: nowrap;
+}
+
+.crypto-ticker:hover .crypto-ticker-track {
+  animation-play-state: paused;
 }
 
 .crypto-ticker-item {
@@ -487,6 +490,7 @@ h2:hover .text-primary {
   letter-spacing: 0.02em;
   color: hsl(var(--muted-foreground));
   flex-shrink: 0;
+  margin-right: 2rem;
 }
 
 .crypto-ticker-icon {
@@ -507,12 +511,17 @@ h2:hover .text-primary {
   transition: color 0.3s ease;
 }
 
-.crypto-ticker-price.ticker-up {
+.crypto-ticker-change {
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+}
+
+.crypto-ticker-change.ticker-up {
   color: hsl(var(--neon-green));
 }
 
-.crypto-ticker-price.ticker-down {
-  color: hsl(0 84% 55%);
+.crypto-ticker-change.ticker-down {
+  color: hsl(0 84% 60%);
 }
 
 .crypto-ticker-dot {

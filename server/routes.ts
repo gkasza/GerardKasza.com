@@ -7,6 +7,9 @@ import { Resend } from "resend";
 
 const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
 
+const escapeHtml = (s: string) =>
+  s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;");
+
 export async function registerRoutes(
   httpServer: Server,
   app: Express
@@ -21,14 +24,14 @@ export async function registerRoutes(
         await resend.emails.send({
           from: "onboarding@resend.dev",
           to: "gjkasza@gmail.com",
-          subject: `New Contact Form Message from ${validatedData.name}`,
+          subject: `New Contact Form Message from ${validatedData.name.replace(/[\r\n]+/g, " ")}`,
           html: `
             <h2>New Contact Form Submission</h2>
-            <p><strong>Name:</strong> ${validatedData.name}</p>
-            <p><strong>Email:</strong> ${validatedData.email}</p>
-            <p><strong>Subject:</strong> ${validatedData.subject || "No subject"}</p>
+            <p><strong>Name:</strong> ${escapeHtml(validatedData.name)}</p>
+            <p><strong>Email:</strong> ${escapeHtml(validatedData.email)}</p>
+            <p><strong>Subject:</strong> ${escapeHtml(validatedData.subject || "No subject")}</p>
             <p><strong>Message:</strong></p>
-            <p>${validatedData.message.replace(/\n/g, "<br>")}</p>
+            <p>${escapeHtml(validatedData.message).replace(/\n/g, "<br>")}</p>
           `,
         });
       } else {
