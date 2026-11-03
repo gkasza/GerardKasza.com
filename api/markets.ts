@@ -1,5 +1,26 @@
 import type { VercelRequest, VercelResponse } from "@vercel/node";
-import { CRYPTO, INDICES, type MarketItem } from "../shared/markets";
+// Kept self-contained: Vercel's ESM runtime can't resolve extensionless imports outside api/.
+// Symbols must match shared/markets.ts, which the ticker uses for its placeholders.
+interface MarketItem {
+  symbol: string;
+  kind: "crypto" | "index";
+  price: number | null;
+  change: number | null;
+}
+
+const CRYPTO = [
+  { id: "bitcoin", symbol: "BTC" },
+  { id: "ethereum", symbol: "ETH" },
+  { id: "solana", symbol: "SOL" },
+];
+
+const INDICES = [
+  { ticker: "^DJI", symbol: "DOW" },
+  { ticker: "^GSPC", symbol: "S&P 500" },
+  { ticker: "^IXIC", symbol: "NASDAQ" },
+  { ticker: "^N225", symbol: "NIKKEI" },
+  { ticker: "^FTSE", symbol: "FTSE 100" },
+];
 
 const UA = { "User-Agent": "Mozilla/5.0 (compatible; gerardkasza.com market ticker)" };
 
