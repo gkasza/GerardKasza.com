@@ -1,15 +1,16 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { useInView } from "framer-motion";
 import { useRef, useState, forwardRef } from "react";
-import { ExternalLink, Layers, LineChart, Lock, Mail, Sparkles, Target } from "lucide-react";
+import { ExternalLink, Layers, LineChart, Lock, Mail, ShieldCheck, Sparkles, Target } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { TiltCard } from "./TiltCard";
 import advisorSignalsImg from "@assets/advisor-signals.webp";
 import portfloImg from "@assets/portflo-screenshot.webp";
 import jamesKaszaImg from "@assets/image_1772987645677.webp";
+import armoredGarageImg from "@assets/armored-garage-door.webp";
 
-const categories = ["All", "Wealth", "Crypto", "Sports"];
+const categories = ["All", "Wealth", "Crypto", "Sports", "Local"];
 
 const projects = [
   {
@@ -47,6 +48,17 @@ const projects = [
     highlight: "Elite Sports",
     link: "https://jameskasza.com/",
     image: jamesKaszaImg,
+  },
+  {
+    id: 4,
+    title: "Armored Garage Door [Public]",
+    category: "Local",
+    description: "I built this site for my buddy JC Antunez, a veteran-owned garage door company serving Raleigh and the Triangle. We designed a trust-first local experience: an interactive 'Door Doctor' that triages symptoms to likely cause, safe next step, and typical cost; a live Door Designer that previews style, color, and windows with a ballpark installed price; transparent pricing (rare for the trade); and heavy local SEO. Mobile-first, built to convert the 2 a.m. emergency caller.",
+    tags: ["Local SEO", "Veteran-Owned", "Interactive UX", "Lead Gen"],
+    icon: ShieldCheck,
+    highlight: "Local SEO",
+    link: "https://armoredgaragedoorraleigh.com/",
+    image: armoredGarageImg,
   },
 ];
 
