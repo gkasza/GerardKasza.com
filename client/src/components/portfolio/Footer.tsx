@@ -88,7 +88,10 @@ export function Footer() {
             &copy; {currentYear} Gerard Kasza. All rights reserved.
           </p>
           <p className="text-xs text-muted-foreground/40">
-            Designed & built by Gerard Kasza
+            Designed & built by Gerard Kasza ·{" "}
+            <a href="/privacy" className="inline-block py-2 hover:text-primary transition-colors">
+              Privacy
+            </a>
           </p>
         </div>
       </div>
