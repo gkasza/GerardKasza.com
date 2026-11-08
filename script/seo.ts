@@ -12,7 +12,7 @@ const stripTag = (title: string) => title.replace(/\s*\[.*?\]\s*$/, "");
 const description =
   "Raleigh-based fintech partnerships and enterprise GTM executive across wealth, banking, credit, and crypto. Back-to-back Sales Leader of the Year.";
 
-function jsonLd(today: string) {
+function jsonLd(dateModified: string) {
   const personId = `${profile.url}/#person`;
   const current = profile.experiences.find((e) => e.current);
   const past = profile.experiences.filter((e) => !e.current);
@@ -32,7 +32,8 @@ function jsonLd(today: string) {
       url: profile.url,
       name: `${profile.name} | ${profile.headline}`,
       description,
-      dateModified: today,
+      dateCreated: "2026-04-02T22:01:20-04:00",
+      dateModified,
       isPartOf: { "@id": `${profile.url}/#website` },
       mainEntity: { "@id": personId },
     },
@@ -247,13 +248,15 @@ export function notFoundHtml(indexHtml: string) {
 }
 
 export function seo(): Plugin {
-  const today = new Date().toISOString().slice(0, 10);
+  const now = new Date();
+  const today = now.toISOString().slice(0, 10);
+  const dateModified = now.toISOString();
   return {
     name: "profile-seo",
     transformIndexHtml(html) {
       return html
         .split("<!--seo:description-->").join(esc(description))
-        .replace("<!--seo:jsonld-->", `<script type="application/ld+json">${jsonLd(today)}</script>`)
+        .replace("<!--seo:jsonld-->", `<script type="application/ld+json">${jsonLd(dateModified)}</script>`)
         .replace(
           '<div id="root"></div>',
           `<div id="root"><div style="position:absolute;width:1px;height:1px;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0">${crawlerHtml()}</div></div>`,
