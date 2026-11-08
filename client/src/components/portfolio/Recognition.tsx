@@ -1,6 +1,5 @@
-import { motion } from "framer-motion";
-import { useInView } from "framer-motion";
-import { useRef, useEffect, useState, useCallback } from "react";
+import { motion, useInView, useReducedMotion } from "framer-motion";
+import { useRef, useEffect, useState } from "react";
 import { Trophy, Newspaper, DollarSign, Activity } from "lucide-react";
 import { profile } from "@shared/profile";
 
@@ -22,30 +21,32 @@ function CountUp({
   suffix: string;
   inView: boolean;
 }) {
+  const reduceMotion = useReducedMotion();
   const [value, setValue] = useState(0);
-  const hasAnimated = useRef(false);
 
   useEffect(() => {
-    if (!inView || hasAnimated.current) return;
-    hasAnimated.current = true;
+    if (!inView) return;
+    if (reduceMotion) {
+      setValue(target);
+      return;
+    }
     const duration = 1500;
     const start = performance.now();
+    let frame = requestAnimationFrame(function update(now) {
+      const progress = Math.min((now - start) / duration, 1);
+      setValue(Math.round((1 - Math.pow(1 - progress, 3)) * target));
+      if (progress < 1) frame = requestAnimationFrame(update);
+    });
+    return () => cancelAnimationFrame(frame);
+  }, [inView, target, reduceMotion]);
 
-    function update(now: number) {
-      const elapsed = now - start;
-      const progress = Math.min(elapsed / duration, 1);
-      const eased = 1 - Math.pow(1 - progress, 3);
-      setValue(Math.round(eased * target));
-      if (progress < 1) requestAnimationFrame(update);
-    }
-
-    requestAnimationFrame(update);
-  }, [inView, target]);
-
-  const display =
-    suffix === "%" ? `${value}%` : suffix === "+" ? `${value}+` : `${value}`;
-
-  return <span>{display}</span>;
+  // Assistive tech and agents get the real figure immediately; only the visual counts up.
+  return (
+    <>
+      <span aria-hidden="true">{`${value}${suffix}`}</span>
+      <span className="sr-only">{`${target}${suffix}`}</span>
+    </>
+  );
 }
 
 export function Recognition() {

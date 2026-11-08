@@ -1,18 +1,18 @@
-import { useEffect, useRef, useCallback } from "react";
+import { useEffect, useRef } from "react";
 
 const SYMBOL_SETS = {
   crypto: {
     chars: [
-      "\u20BF", "\u20BF", "\u20BF", "\u20BF", "\u20BF", "\u20BF",
-      "\u039E", "\u039E", "\u039E", "\u039E",
-      "\u25C8", "\u25C8",
-      "\u039B",
-      "\u0394", "\u00D7", "\u221E", "\u26A1", "\u2B21", "\u2666", "\u03A3",
+      "₿", "₿", "₿", "₿", "₿", "₿",
+      "Ξ", "Ξ", "Ξ", "Ξ",
+      "◈", "◈",
+      "Λ",
+      "Δ", "×", "∞", "⚡", "⬡", "♦", "Σ",
     ],
     css: "char-crypto",
   },
   finance: {
-    chars: ["$", "$", "$", "$", "\u20AC", "\u00A3", "\u00A5", "%", "\u25B3"],
+    chars: ["$", "$", "$", "$", "€", "£", "¥", "%", "△"],
     css: "char-finance",
   },
   tech: {
@@ -25,7 +25,7 @@ const SYMBOL_SETS = {
   },
 };
 
-// Weighted category selection: crypto and finance appear ~3x more than tech/binary
+// Crypto and finance appear ~3x more often than tech/binary
 const WEIGHTED_CATEGORIES: (keyof typeof SYMBOL_SETS)[] = [
   "crypto", "crypto", "crypto",
   "finance", "finance", "finance",
@@ -33,11 +33,14 @@ const WEIGHTED_CATEGORIES: (keyof typeof SYMBOL_SETS)[] = [
   "binary",
 ];
 
-function randomSymbol() {
-  const cat = WEIGHTED_CATEGORIES[Math.floor(Math.random() * WEIGHTED_CATEGORIES.length)];
-  const set = SYMBOL_SETS[cat];
-  const char = set.chars[Math.floor(Math.random() * set.chars.length)];
-  return { char, css: set.css };
+const WEIGHTED_SETS = WEIGHTED_CATEGORIES.map((c) => SYMBOL_SETS[c]);
+const GLITCH_SETS = [SYMBOL_SETS.crypto, SYMBOL_SETS.finance];
+
+const pick = <T,>(items: readonly T[]) => items[Math.floor(Math.random() * items.length)];
+
+function randomSymbol(sets: readonly { chars: string[]; css: string }[] = WEIGHTED_SETS) {
+  const set = pick(sets);
+  return { char: pick(set.chars), css: set.css };
 }
 
 function particleColor(css: string) {
@@ -45,6 +48,285 @@ function particleColor(css: string) {
   if (css === "char-finance") return "rgba(80,230,140,0.4)";
   if (css === "char-tech") return "rgba(100,200,240,0.4)";
   return "rgba(100,200,240,0.2)";
+}
+
+/** Phases run in this order; the current one is mirrored to `data-phase` on the wrapper. */
+export type DecodePhase =
+  | "pending"
+  | "decoding-first"
+  | "decoding-last"
+  | "scanning"
+  | "tracing"
+  | "underlining"
+  | "complete";
+
+interface Letter {
+  el: HTMLSpanElement;
+  scramble: HTMLSpanElement;
+  real: HTMLSpanElement;
+}
+
+interface Elements {
+  wrapper: HTMLDivElement;
+  first: HTMLSpanElement;
+  last: HTMLSpanElement;
+  scanLine: HTMLDivElement;
+  underline: HTMLDivElement;
+}
+
+function onAbort(signal: AbortSignal, cleanup: () => void, reject: (reason: unknown) => void) {
+  const handler = () => {
+    cleanup();
+    reject(signal.reason);
+  };
+  signal.addEventListener("abort", handler, { once: true });
+  return () => signal.removeEventListener("abort", handler);
+}
+
+function wait(ms: number, signal: AbortSignal) {
+  return new Promise<void>((resolve, reject) => {
+    if (signal.aborted) return reject(signal.reason);
+    const id = setTimeout(() => {
+      detach();
+      resolve();
+    }, ms);
+    const detach = onAbort(signal, () => clearTimeout(id), reject);
+  });
+}
+
+/** Calls `tick` every `ms` until it returns true. */
+function repeat(ms: number, signal: AbortSignal, tick: () => boolean) {
+  return new Promise<void>((resolve, reject) => {
+    if (signal.aborted) return reject(signal.reason);
+    const id = setInterval(() => {
+      if (!tick()) return;
+      clearInterval(id);
+      detach();
+      resolve();
+    }, ms);
+    const detach = onAbort(signal, () => clearInterval(id), reject);
+  });
+}
+
+/** Runs `onFrame(progress)` on each animation frame for `duration` ms. */
+function animate(duration: number, signal: AbortSignal, onFrame: (progress: number) => void) {
+  return new Promise<void>((resolve, reject) => {
+    if (signal.aborted) return reject(signal.reason);
+    const start = performance.now();
+    let id = requestAnimationFrame(function frame(now) {
+      const progress = Math.min((now - start) / duration, 1);
+      onFrame(progress);
+      if (progress < 1) {
+        id = requestAnimationFrame(frame);
+      } else {
+        detach();
+        resolve();
+      }
+    });
+    const detach = onAbort(signal, () => cancelAnimationFrame(id), reject);
+  });
+}
+
+const ignoreAbort = () => {};
+
+function setScramble(letter: Letter, sym = randomSymbol()) {
+  letter.scramble.dataset.c = sym.char;
+  letter.scramble.className = "dn-scramble-char " + sym.css;
+}
+
+function showReal(letter: Letter) {
+  letter.scramble.style.display = "none";
+  letter.real.classList.add("dn-show");
+}
+
+function showScramble(letter: Letter) {
+  letter.scramble.style.display = "";
+  letter.real.classList.remove("dn-show");
+}
+
+function createLetters(container: HTMLSpanElement, word: string, wordClass: string): Letter[] {
+  container.innerHTML = "";
+  return Array.from(word, (c) => {
+    const el = document.createElement("span");
+    el.className = "dn-letter";
+
+    const sizer = document.createElement("span");
+    sizer.className = "dn-sizer";
+    sizer.dataset.c = c;
+
+    const scramble = document.createElement("span");
+    const real = document.createElement("span");
+    real.className = "dn-real-char " + wordClass;
+    real.textContent = c;
+
+    el.append(sizer, scramble, real);
+    container.appendChild(el);
+    const letter = { el, scramble, real };
+    setScramble(letter);
+    return letter;
+  });
+}
+
+function spawnParticle(wrapper: HTMLDivElement, letter: Letter) {
+  const sym = randomSymbol();
+  const particle = document.createElement("span");
+  particle.className = "dn-particle";
+  particle.dataset.c = sym.char;
+  particle.style.color = particleColor(sym.css);
+
+  const rect = letter.el.getBoundingClientRect();
+  const wrapperRect = wrapper.getBoundingClientRect();
+  particle.style.left = `${rect.left - wrapperRect.left + rect.width / 2}px`;
+  particle.style.top = `${rect.top - wrapperRect.top}px`;
+  particle.style.setProperty("--drift-x", `${(Math.random() - 0.5) * 30}px`);
+
+  wrapper.appendChild(particle);
+  setTimeout(() => particle.remove(), 1400);
+}
+
+async function decodeLetter(wrapper: HTMLDivElement, letter: Letter, signal: AbortSignal) {
+  const cycles = 5 + Math.floor(Math.random() * 6);
+  const speed = 60 + Math.floor(Math.random() * 40);
+  let count = 0;
+  await repeat(speed, signal, () => {
+    setScramble(letter);
+    if (count % 2 === 0) spawnParticle(wrapper, letter);
+    return ++count >= cycles;
+  });
+  letter.el.classList.add("decoded");
+  showReal(letter);
+}
+
+function decodeWord(wrapper: HTMLDivElement, letters: Letter[], signal: AbortSignal) {
+  return Promise.all(
+    letters.map(async (letter, i) => {
+      await wait(i * 130, signal);
+      await decodeLetter(wrapper, letter, signal);
+    }),
+  );
+}
+
+function enableIdleEffects(letters: Letter[], signal: AbortSignal) {
+  const hovered = new Set<Letter>();
+
+  for (const letter of letters) {
+    // One controller per hover transition, so enter/leave cancel each other and unmount cancels both.
+    let hover = new AbortController();
+    signal.addEventListener("abort", () => hover.abort(), { once: true });
+    const nextHover = () => {
+      hover.abort();
+      hover = new AbortController();
+      return hover.signal;
+    };
+
+    letter.el.addEventListener(
+      "mouseenter",
+      () => {
+        const hoverSignal = nextHover();
+        hovered.add(letter);
+        showScramble(letter);
+        repeat(70, hoverSignal, () => (setScramble(letter), false)).catch(ignoreAbort);
+      },
+      { signal },
+    );
+
+    letter.el.addEventListener(
+      "mouseleave",
+      () => {
+        const hoverSignal = nextHover();
+        let count = 0;
+        repeat(50, hoverSignal, () => (setScramble(letter), ++count >= 3))
+          .then(() => {
+            hovered.delete(letter);
+            showReal(letter);
+          })
+          .catch(ignoreAbort);
+      },
+      { signal },
+    );
+  }
+
+  repeat(8000 + Math.random() * 4000, signal, () => {
+    const letter = pick(letters);
+    if (hovered.has(letter)) return false;
+    setScramble(letter, randomSymbol(GLITCH_SETS));
+    showScramble(letter);
+    wait(120, signal).then(() => showReal(letter), ignoreAbort);
+    return false;
+  }).catch(ignoreAbort);
+}
+
+async function playDecode(
+  els: Elements,
+  firstName: string,
+  lastName: string,
+  signal: AbortSignal,
+  reduceMotion: boolean,
+) {
+  const setPhase = (phase: DecodePhase) => {
+    els.wrapper.dataset.phase = phase;
+  };
+
+  setPhase("pending");
+  els.underline.style.width = "0";
+  els.wrapper.querySelectorAll(".dn-particle").forEach((p) => p.remove());
+
+  if (reduceMotion) {
+    const letters = [
+      ...createLetters(els.first, firstName, "dn-gradient-first"),
+      ...createLetters(els.last, lastName, "dn-gradient-last"),
+    ];
+    letters.forEach((l) => {
+      l.el.classList.add("decoded");
+      showReal(l);
+    });
+    els.underline.style.width = "100%";
+    setPhase("complete");
+    return;
+  }
+
+  await wait(300, signal);
+  const firstLetters = createLetters(els.first, firstName, "dn-gradient-first");
+  const lastLetters = createLetters(els.last, lastName, "dn-gradient-last");
+  const letters = [...firstLetters, ...lastLetters];
+
+  await wait(500, signal);
+  setPhase("decoding-first");
+  await decodeWord(els.wrapper, firstLetters, signal);
+
+  await wait(280, signal);
+  setPhase("decoding-last");
+  await decodeWord(els.wrapper, lastLetters, signal);
+
+  await wait(200, signal);
+  setPhase("scanning");
+  els.scanLine.style.opacity = "1";
+  await animate(900, signal, (p) => {
+    const eased = p < 0.5 ? 2 * p * p : 1 - Math.pow(-2 * p + 2, 2) / 2;
+    els.scanLine.style.left = `${-2 + eased * 104}%`;
+  });
+  els.scanLine.style.opacity = "0";
+
+  setPhase("tracing");
+  for (let i = 0; i < letters.length; i++) {
+    if (i > 0) letters[i - 1].real.classList.remove("trace-active");
+    letters[i].real.classList.add("trace-active");
+    await wait(90, signal);
+  }
+  letters[letters.length - 1].real.classList.remove("trace-active");
+  await wait(150, signal);
+  letters.forEach((l, i) => {
+    l.real.classList.add("idle-glow");
+    l.real.style.animationDelay = `${i * 0.25}s`;
+  });
+
+  setPhase("underlining");
+  await animate(600, signal, (p) => {
+    els.underline.style.width = `${(1 - Math.pow(1 - p, 3)) * 100}%`;
+  });
+
+  setPhase("complete");
+  enableIdleEffects(letters, signal);
 }
 
 interface DecodeNameProps {
@@ -56,319 +338,35 @@ export function DecodeName({ firstName, lastName }: DecodeNameProps) {
   const wrapperRef = useRef<HTMLDivElement>(null);
   const firstRef = useRef<HTMLSpanElement>(null);
   const lastRef = useRef<HTMLSpanElement>(null);
+  const scanLineRef = useRef<HTMLDivElement>(null);
   const underlineRef = useRef<HTMLDivElement>(null);
-  const effectComplete = useRef(false);
-  const allLettersRef = useRef<HTMLSpanElement[]>([]);
-  const microGlitchRef = useRef<ReturnType<typeof setInterval> | null>(null);
-  const hasRunRef = useRef(false);
-
-  const createLetters = useCallback((container: HTMLSpanElement, word: string, wordClass: string) => {
-    container.innerHTML = "";
-    const letters: HTMLSpanElement[] = [];
-    for (let i = 0; i < word.length; i++) {
-      const span = document.createElement("span");
-      span.className = "dn-letter";
-
-      // Invisible sizing text
-      const sizer = document.createElement("span");
-      sizer.className = "dn-sizer";
-      sizer.dataset.c = word[i];
-      span.appendChild(sizer);
-
-      // Scramble character (visible during decode)
-      const scrambleEl = document.createElement("span");
-      scrambleEl.className = "dn-scramble-char";
-      const sym = randomSymbol();
-      scrambleEl.dataset.c = sym.char;
-      scrambleEl.classList.add(sym.css);
-      span.appendChild(scrambleEl);
-
-      // Real character (hidden until decoded)
-      const realEl = document.createElement("span");
-      realEl.className = "dn-real-char " + wordClass;
-      realEl.textContent = word[i];
-      span.appendChild(realEl);
-
-      container.appendChild(span);
-      letters.push(span);
-    }
-    return letters;
-  }, []);
-
-  const spawnParticle = useCallback((letter: HTMLSpanElement) => {
-    const wrapper = wrapperRef.current;
-    if (!wrapper) return;
-    const sym = randomSymbol();
-    const particle = document.createElement("span");
-    particle.className = "dn-particle";
-    particle.dataset.c = sym.char;
-    particle.style.color = particleColor(sym.css);
-
-    const rect = letter.getBoundingClientRect();
-    const wrapperRect = wrapper.getBoundingClientRect();
-    particle.style.left = `${rect.left - wrapperRect.left + rect.width / 2}px`;
-    particle.style.top = `${rect.top - wrapperRect.top}px`;
-    particle.style.setProperty("--drift-x", `${(Math.random() - 0.5) * 30}px`);
-
-    wrapper.appendChild(particle);
-    setTimeout(() => particle.remove(), 1400);
-  }, []);
-
-  const scrambleLetter = useCallback(
-    (letter: HTMLSpanElement, callback?: () => void) => {
-      const scrambleEl = letter.querySelector(".dn-scramble-char") as HTMLSpanElement;
-      const realEl = letter.querySelector(".dn-real-char") as HTMLSpanElement;
-      const cycles = 5 + Math.floor(Math.random() * 6);
-      const speed = 60 + Math.floor(Math.random() * 40);
-      let count = 0;
-
-      const interval = setInterval(() => {
-        const sym = randomSymbol();
-        scrambleEl.dataset.c = sym.char;
-        scrambleEl.className = "dn-scramble-char " + sym.css;
-        if (count % 2 === 0) spawnParticle(letter);
-        count++;
-        if (count >= cycles) {
-          clearInterval(interval);
-          letter.classList.add("decoded");
-          scrambleEl.style.display = "none";
-          realEl.classList.add("dn-show");
-          if (callback) callback();
-        }
-      }, speed);
-    },
-    [spawnParticle]
-  );
-
-  const setupHoverScramble = useCallback((letter: HTMLSpanElement) => {
-    let hoverInterval: ReturnType<typeof setInterval> | null = null;
-
-    letter.addEventListener("mouseenter", () => {
-      if (!letter.classList.contains("decoded") || !effectComplete.current) return;
-      const scrambleEl = letter.querySelector(".dn-scramble-char") as HTMLSpanElement;
-      const realEl = letter.querySelector(".dn-real-char") as HTMLSpanElement;
-      scrambleEl.style.display = "";
-      realEl.classList.remove("dn-show");
-
-      hoverInterval = setInterval(() => {
-        const sym = randomSymbol();
-        scrambleEl.dataset.c = sym.char;
-        scrambleEl.className = "dn-scramble-char " + sym.css;
-      }, 70);
-    });
-
-    letter.addEventListener("mouseleave", () => {
-      if (hoverInterval) {
-        clearInterval(hoverInterval);
-        hoverInterval = null;
-      }
-      const scrambleEl = letter.querySelector(".dn-scramble-char") as HTMLSpanElement;
-      const realEl = letter.querySelector(".dn-real-char") as HTMLSpanElement;
-      let resolveCount = 0;
-      const resolveInterval = setInterval(() => {
-        const sym = randomSymbol();
-        scrambleEl.dataset.c = sym.char;
-        scrambleEl.className = "dn-scramble-char " + sym.css;
-        resolveCount++;
-        if (resolveCount >= 3) {
-          clearInterval(resolveInterval);
-          scrambleEl.style.display = "none";
-          realEl.classList.add("dn-show");
-        }
-      }, 50);
-    });
-  }, []);
-
-  const drawUnderline = useCallback((onComplete?: () => void) => {
-    const underline = underlineRef.current;
-    if (!underline) return;
-    underline.style.width = "0";
-    const duration = 600;
-    const start = performance.now();
-
-    function animate(now: number) {
-      const elapsed = now - start;
-      const progress = Math.min(elapsed / duration, 1);
-      const eased = 1 - Math.pow(1 - progress, 3);
-      underline!.style.width = `${eased * 100}%`;
-      if (progress < 1) {
-        requestAnimationFrame(animate);
-      } else {
-        if (onComplete) onComplete();
-      }
-    }
-    requestAnimationFrame(animate);
-  }, []);
-
-  const runScanLine = useCallback((onComplete?: () => void) => {
-    const wrapper = wrapperRef.current;
-    if (!wrapper) return;
-    const scanLine = wrapper.querySelector(".dn-scan-line") as HTMLElement;
-    if (!scanLine) return;
-    scanLine.style.opacity = "1";
-    scanLine.style.left = "-2%";
-    const duration = 900;
-    const start = performance.now();
-
-    function animate(now: number) {
-      const elapsed = now - start;
-      const progress = Math.min(elapsed / duration, 1);
-      const eased =
-        progress < 0.5
-          ? 2 * progress * progress
-          : 1 - Math.pow(-2 * progress + 2, 2) / 2;
-      scanLine.style.left = `${-2 + eased * 104}%`;
-      if (progress < 1) {
-        requestAnimationFrame(animate);
-      } else {
-        scanLine.style.opacity = "0";
-        if (onComplete) onComplete();
-      }
-    }
-    requestAnimationFrame(animate);
-  }, []);
-
-  const runCircuitTrace = useCallback(
-    (allLetters: HTMLSpanElement[], onComplete?: () => void) => {
-      let i = 0;
-      function traceNext() {
-        if (i > 0) {
-          const prevReal = allLetters[i - 1].querySelector(".dn-real-char") as HTMLElement;
-          if (prevReal) prevReal.classList.remove("trace-active");
-        }
-        if (i < allLetters.length) {
-          const curReal = allLetters[i].querySelector(".dn-real-char") as HTMLElement;
-          if (curReal) curReal.classList.add("trace-active");
-          i++;
-          setTimeout(traceNext, 90);
-        } else {
-          setTimeout(() => {
-            const lastReal = allLetters[allLetters.length - 1].querySelector(".dn-real-char") as HTMLElement;
-            if (lastReal) lastReal.classList.remove("trace-active");
-            allLetters.forEach((l, idx) => {
-              const real = l.querySelector(".dn-real-char") as HTMLElement;
-              if (real) {
-                real.classList.add("idle-glow");
-                real.style.animationDelay = `${idx * 0.25}s`;
-              }
-            });
-            if (onComplete) onComplete();
-          }, 150);
-        }
-      }
-      traceNext();
-    },
-    []
-  );
-
-  const startMicroGlitch = useCallback(() => {
-    if (microGlitchRef.current) clearInterval(microGlitchRef.current);
-    microGlitchRef.current = setInterval(() => {
-      if (!effectComplete.current || allLettersRef.current.length === 0) return;
-      const idx = Math.floor(Math.random() * allLettersRef.current.length);
-      const letter = allLettersRef.current[idx];
-      const scrambleEl = letter.querySelector(".dn-scramble-char") as HTMLSpanElement;
-      const realEl = letter.querySelector(".dn-real-char") as HTMLSpanElement;
-      const glitchSets = [SYMBOL_SETS.crypto, SYMBOL_SETS.finance];
-      const set = glitchSets[Math.floor(Math.random() * glitchSets.length)];
-      const char = set.chars[Math.floor(Math.random() * set.chars.length)];
-      scrambleEl.dataset.c = char;
-      scrambleEl.className = "dn-scramble-char " + set.css;
-      scrambleEl.style.display = "";
-      realEl.classList.remove("dn-show");
-      setTimeout(() => {
-        scrambleEl.style.display = "none";
-        realEl.classList.add("dn-show");
-      }, 120);
-    }, 8000 + Math.random() * 4000);
-  }, []);
-
-  const runEffect = useCallback(() => {
-    const firstEl = firstRef.current;
-    const lastEl = lastRef.current;
-    const wrapper = wrapperRef.current;
-    if (!firstEl || !lastEl || !wrapper) return;
-
-    effectComplete.current = false;
-    if (underlineRef.current) underlineRef.current.style.width = "0";
-    if (microGlitchRef.current) clearInterval(microGlitchRef.current);
-    wrapper.querySelectorAll(".dn-particle").forEach((p) => p.remove());
-
-    const firstLetters = createLetters(firstEl, firstName, "dn-gradient-first");
-    const lastLetters = createLetters(lastEl, lastName, "dn-gradient-last");
-    const allLetters = [...firstLetters, ...lastLetters];
-    allLettersRef.current = allLetters;
-
-    // Phase 1: Decode first name
-    setTimeout(() => {
-      let firstDecoded = 0;
-      firstLetters.forEach((letter, index) => {
-        setTimeout(() => {
-          scrambleLetter(letter, () => {
-            firstDecoded++;
-            if (firstDecoded === firstLetters.length) {
-              // Beat pause, then decode last name
-              setTimeout(() => {
-                let lastDecoded = 0;
-                lastLetters.forEach((letter2, index2) => {
-                  setTimeout(() => {
-                    scrambleLetter(letter2, () => {
-                      lastDecoded++;
-                      if (lastDecoded === lastLetters.length) {
-                        setTimeout(() => {
-                          runScanLine(() => {
-                            runCircuitTrace(allLetters, () => {
-                              drawUnderline(() => {
-                                effectComplete.current = true;
-                                allLetters.forEach((l) => setupHoverScramble(l));
-                                startMicroGlitch();
-                              });
-                            });
-                          });
-                        }, 200);
-                      }
-                    });
-                  }, index2 * 130);
-                });
-              }, 280);
-            }
-          });
-        }, index * 130);
-      });
-    }, 500);
-  }, [
-    firstName,
-    lastName,
-    createLetters,
-    scrambleLetter,
-    runScanLine,
-    runCircuitTrace,
-    drawUnderline,
-    setupHoverScramble,
-    startMicroGlitch,
-  ]);
 
   useEffect(() => {
-    if (!hasRunRef.current) {
-      hasRunRef.current = true;
-      const timer = setTimeout(runEffect, 300);
-      return () => clearTimeout(timer);
-    }
-  }, [runEffect]);
-
-  useEffect(() => {
-    return () => {
-      if (microGlitchRef.current) clearInterval(microGlitchRef.current);
+    const els = {
+      wrapper: wrapperRef.current,
+      first: firstRef.current,
+      last: lastRef.current,
+      scanLine: scanLineRef.current,
+      underline: underlineRef.current,
     };
-  }, []);
+    if (!els.wrapper || !els.first || !els.last || !els.scanLine || !els.underline) return;
+
+    const controller = new AbortController();
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    playDecode(els as Elements, firstName, lastName, controller.signal, reduceMotion).catch(ignoreAbort);
+    return () => controller.abort();
+  }, [firstName, lastName]);
 
   return (
-    <div className="dn-name-wrapper" ref={wrapperRef}>
-      <span className="dn-word" ref={firstRef} />
-      <span className="dn-word-space">{" "}</span>
-      <span className="dn-word" ref={lastRef} />
-      <div className="dn-scan-line" />
-      <div className="dn-underline-trace" ref={underlineRef} />
-    </div>
+    <>
+      <span className="sr-only">{`${firstName} ${lastName}`}</span>
+      <div className="dn-name-wrapper" ref={wrapperRef} data-phase="pending" aria-hidden="true">
+        <span className="dn-word" ref={firstRef} />
+        <span className="dn-word-space">{" "}</span>
+        <span className="dn-word" ref={lastRef} />
+        <div className="dn-scan-line" ref={scanLineRef} />
+        <div className="dn-underline-trace" ref={underlineRef} />
+      </div>
+    </>
   );
 }

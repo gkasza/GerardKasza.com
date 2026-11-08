@@ -91,7 +91,12 @@ export function Contact() {
             transition={{ delay: 0.2, duration: 0.6 }}
           >
             <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmit)} className="backdrop-blur-md bg-card/50 border border-border rounded-lg p-6 space-y-6">
+              <form
+                onSubmit={form.handleSubmit(onSubmit)}
+                className="backdrop-blur-md bg-card/50 border border-border rounded-lg p-6 space-y-6"
+                aria-busy={contactMutation.isPending}
+                data-status={contactMutation.status}
+              >
                 <div className="grid sm:grid-cols-2 gap-4">
                   <FormField
                     control={form.control}

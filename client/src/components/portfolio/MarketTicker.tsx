@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useReducer } from "react";
 import { CRYPTO, INDICES, type MarketItem } from "@shared/markets";
 
 const ICONS: Record<string, string> = Object.fromEntries(CRYPTO.map((c) => [c.symbol, c.icon]));
@@ -10,6 +10,40 @@ const PLACEHOLDER: MarketItem[] = [
 
 const POLL_INTERVAL = 60_000;
 
+/**
+ * loading: no data yet · live: last fetch succeeded
+ * stale: had data, latest fetch failed · offline: never got data
+ */
+export type TickerStatus = "loading" | "live" | "stale" | "offline";
+
+type TickerState = { status: TickerStatus; items: MarketItem[] };
+type TickerEvent = { type: "loaded"; items: MarketItem[] } | { type: "failed" };
+
+function tickerReducer(state: TickerState, event: TickerEvent): TickerState {
+  switch (event.type) {
+    case "loaded": {
+      const bySymbol = new Map(event.items.map((i) => [i.symbol, i]));
+      return { status: "live", items: state.items.map((p) => bySymbol.get(p.symbol) ?? p) };
+    }
+    case "failed":
+      return { ...state, status: state.status === "live" || state.status === "stale" ? "stale" : "offline" };
+  }
+}
+
+const STATUS_LABEL: Record<TickerStatus, string> = {
+  loading: "Loading",
+  live: "Live",
+  stale: "Delayed, showing last known prices",
+  offline: "Prices unavailable",
+};
+
+const DOT_CLASS: Record<TickerStatus, string> = {
+  loading: "dot-off",
+  live: "dot-live",
+  stale: "dot-stale",
+  offline: "dot-off",
+};
+
 function formatPrice(item: MarketItem): string {
   if (item.price === null) return "---";
   const p = item.price;
@@ -19,34 +53,43 @@ function formatPrice(item: MarketItem): string {
 }
 
 export function MarketTicker() {
-  const [items, setItems] = useState<MarketItem[]>(PLACEHOLDER);
-  const [live, setLive] = useState(false);
+  const [{ status, items }, dispatch] = useReducer(tickerReducer, { status: "loading", items: PLACEHOLDER });
 
   useEffect(() => {
-    let cancelled = false;
+    const controller = new AbortController();
+    let timer: ReturnType<typeof setInterval> | undefined;
+
     const load = async () => {
       try {
-        const res = await fetch("/api/markets");
-        if (!res.ok) return;
-        const data: { items: MarketItem[] } = await res.json();
-        if (cancelled || !data.items?.length) return;
-        const bySymbol = new Map(data.items.map((i) => [i.symbol, i]));
-        setItems((prev) => prev.map((p) => bySymbol.get(p.symbol) ?? p));
-        setLive(true);
+        const res = await fetch("/api/markets", { signal: controller.signal });
+        const data: { items?: MarketItem[] } = res.ok ? await res.json() : {};
+        if (!data.items?.length) throw new Error(`markets ${res.status}`);
+        dispatch({ type: "loaded", items: data.items });
       } catch {
-        // keep showing the last known values
+        if (!controller.signal.aborted) dispatch({ type: "failed" });
       }
     };
-    load();
-    const id = setInterval(load, POLL_INTERVAL);
+
+    const start = () => {
+      clearInterval(timer);
+      load();
+      timer = setInterval(load, POLL_INTERVAL);
+    };
+    const onVisibility = () => (document.hidden ? clearInterval(timer) : start());
+
+    start();
+    document.addEventListener("visibilitychange", onVisibility);
     return () => {
-      cancelled = true;
-      clearInterval(id);
+      controller.abort();
+      clearInterval(timer);
+      document.removeEventListener("visibilitychange", onVisibility);
     };
   }, []);
 
+  const label = STATUS_LABEL[status];
+
   return (
-    <div className="crypto-ticker" role="marquee" aria-label="Live market prices">
+    <div className="crypto-ticker" role="marquee" aria-label={`Market prices: ${label}`} data-status={status}>
       <div className="crypto-ticker-track">
         {[...items, ...items].map((item, i) => (
           <span key={`${item.symbol}-${i}`} className="crypto-ticker-item" aria-hidden={i >= items.length || undefined}>
@@ -62,7 +105,7 @@ export function MarketTicker() {
           </span>
         ))}
       </div>
-      <span className={`crypto-ticker-dot ${live ? "dot-live" : "dot-off"}`} title={live ? "Live" : "Loading"} />
+      <span className={`crypto-ticker-dot ${DOT_CLASS[status]}`} title={label} aria-hidden="true" />
     </div>
   );
 }

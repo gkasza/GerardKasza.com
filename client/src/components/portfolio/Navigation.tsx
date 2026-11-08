@@ -1,7 +1,8 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X, Moon, Stars } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { applyTheme, getStoredTheme, nextTheme, type Theme } from "@/lib/theme";
 
 const navItems = [
   { label: "About", href: "#about" },
@@ -14,21 +15,33 @@ const navItems = [
 export function Navigation() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [theme, setTheme] = useState<"midnight" | "deep-space">("midnight");
+  const [theme, setTheme] = useState<Theme>(getStoredTheme);
+  const closeMenuRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 50);
     };
-    window.addEventListener("scroll", handleScroll);
+    handleScroll();
+    window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const toggleTheme = useCallback(() => {
-    const next = theme === "midnight" ? "deep-space" : "midnight";
-    setTheme(next);
-    document.documentElement.setAttribute("data-theme", next);
-  }, [theme]);
+  useEffect(() => applyTheme(theme), [theme]);
+
+  useEffect(() => {
+    if (!isMobileMenuOpen) return;
+    const opener = document.activeElement as HTMLElement | null;
+    closeMenuRef.current?.focus();
+    const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") setIsMobileMenuOpen(false); };
+    document.addEventListener("keydown", onKey);
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      opener?.focus({ preventScroll: true });
+    };
+  }, [isMobileMenuOpen]);
+
+  const toggleTheme = () => setTheme(nextTheme);
 
   const handleNavClick = (href: string) => {
     setIsMobileMenuOpen(false);
@@ -63,7 +76,7 @@ export function Navigation() {
               <button
                 onClick={toggleTheme}
                 className="text-muted-foreground/40 hover:text-primary transition-colors p-2.5 -m-1.5"
-                aria-label={`Switch to ${theme === "midnight" ? "deep space" : "midnight"} theme`}
+                aria-label={`Switch to ${nextTheme(theme) === "deep-space" ? "deep space" : "midnight"} theme`}
                 data-testid="button-theme-toggle"
               >
                 {theme === "midnight" ? <Stars className="w-3.5 h-3.5" /> : <Moon className="w-3.5 h-3.5" />}
@@ -96,6 +109,8 @@ export function Navigation() {
               className="md:hidden text-foreground"
               onClick={() => setIsMobileMenuOpen(true)}
               aria-label="Open menu"
+              aria-expanded={isMobileMenuOpen}
+              aria-controls="mobile-menu"
               data-testid="button-mobile-menu"
             >
               <Menu className="w-5 h-5" />
@@ -120,13 +135,19 @@ export function Navigation() {
               exit={{ x: "100%" }}
               transition={{ type: "spring", damping: 25, stiffness: 200 }}
               className="fixed top-0 right-0 bottom-0 w-72 bg-card border-l border-border z-50 p-6"
+              id="mobile-menu"
+              role="dialog"
+              aria-modal="true"
+              aria-label="Site menu"
               data-testid="mobile-menu"
             >
               <div className="flex justify-end mb-8">
                 <Button
+                  ref={closeMenuRef}
                   variant="ghost"
                   size="icon"
                   onClick={() => setIsMobileMenuOpen(false)}
+                  aria-label="Close menu"
                   data-testid="button-close-menu"
                 >
                   <X className="w-5 h-5" />

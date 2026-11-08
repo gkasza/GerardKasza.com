@@ -11,7 +11,8 @@ import portfloImg from "@assets/portflo-screenshot.webp";
 import jamesKaszaImg from "@assets/image_1772987645677.webp";
 import armoredGarageImg from "@assets/armored-garage-door.webp";
 
-const categories = ["All", "Wealth", "Crypto", "Sports", "Local"];
+const categories = ["All", "Wealth", "Crypto", "Sports", "Local"] as const;
+type Category = (typeof categories)[number];
 
 const visuals: Record<number, { icon: typeof LineChart; image: string }> = {
   1: { icon: LineChart, image: advisorSignalsImg },
@@ -83,24 +84,24 @@ const PrivateProjectsCard = forwardRef<HTMLDivElement, { index: number; onReques
   }
 );
 
-function RequestAccessModal({ show, onClose }: { show: boolean; onClose: () => void }) {
+function RequestAccessModal({ open, onClose }: { open: boolean; onClose: () => void }) {
   const closeRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
-    if (!show) return;
+    if (!open) return;
     const opener = document.activeElement as HTMLElement | null;
     closeRef.current?.focus();
     const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") onClose(); };
     document.addEventListener("keydown", onKey);
     return () => {
       document.removeEventListener("keydown", onKey);
-      opener?.focus();
+      opener?.focus({ preventScroll: true });
     };
-  }, [show, onClose]);
+  }, [open, onClose]);
 
   return (
     <AnimatePresence>
-      {show && (
+      {open && (
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -270,9 +271,10 @@ const ProjectCard = forwardRef<HTMLDivElement, { project: typeof projects[0]; in
 export function Projects() {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
-  const [activeCategory, setActiveCategory] = useState("All");
-  const [showLogin, setShowLogin] = useState(false);
-  const closeModal = useCallback(() => setShowLogin(false), []);
+  const [activeCategory, setActiveCategory] = useState<Category>("All");
+  const [isRequestAccessOpen, setIsRequestAccessOpen] = useState(false);
+  const openRequestAccess = useCallback(() => setIsRequestAccessOpen(true), []);
+  const closeRequestAccess = useCallback(() => setIsRequestAccessOpen(false), []);
 
   const filteredProjects = activeCategory === "All" 
     ? projects 
@@ -299,12 +301,13 @@ export function Projects() {
           </h2>
           <div className="w-24 h-1 bg-gradient-to-r from-primary to-neon-green mx-auto rounded-full mb-8" />
           
-          <div className="flex flex-wrap justify-center gap-2">
+          <div className="flex flex-wrap justify-center gap-2" role="group" aria-label="Filter projects by category">
             {categories.map((category) => (
               <Button
                 key={category}
                 variant={activeCategory === category ? "default" : "outline"}
                 size="sm"
+                aria-pressed={activeCategory === category}
                 onClick={() => setActiveCategory(category)}
                 className={activeCategory === category ? "" : "border-border text-muted-foreground hover:text-foreground hover:border-primary/50"}
                 data-testid={`filter-${category.toLowerCase().replace(' ', '-')}`}
@@ -315,21 +318,22 @@ export function Projects() {
           </div>
         </motion.div>
 
-        <motion.div 
+        <motion.div
           layout
           className="grid md:grid-cols-2 lg:grid-cols-3 gap-6"
+          data-category={activeCategory}
         >
           {/* No AnimatePresence: framer-motion 11.13 drops re-entering cards when switching filters */}
           {filteredProjects.map((project, index) => (
             <ProjectCard key={project.id} project={project} index={index} />
           ))}
           {activeCategory === "All" && (
-            <PrivateProjectsCard key="private-projects" index={filteredProjects.length} onRequestAccess={() => setShowLogin(true)} />
+            <PrivateProjectsCard key="private-projects" index={filteredProjects.length} onRequestAccess={openRequestAccess} />
           )}
         </motion.div>
       </div>
 
-      <RequestAccessModal show={showLogin} onClose={closeModal} />
+      <RequestAccessModal open={isRequestAccessOpen} onClose={closeRequestAccess} />
     </section>
   );
 }
