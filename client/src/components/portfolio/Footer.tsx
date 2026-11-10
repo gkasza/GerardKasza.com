@@ -88,9 +88,29 @@ export function Footer() {
             &copy; {currentYear} Gerard Kasza. All rights reserved.
           </p>
           <p className="text-xs text-muted-foreground/40">
-            Designed & built by Gerard Kasza ·{" "}
+            Designed & built by{" "}
+            <a
+              href="https://raleighwebsitecompany.com/"
+              target="_blank"
+              rel="noopener"
+              className="inline-block py-2 hover:text-primary transition-colors"
+              data-testid="link-raleigh-website-co"
+            >
+              Raleigh Website Co.
+            </a>{" "}
+            ·{" "}
             <a href="/privacy" className="inline-block py-2 hover:text-primary transition-colors">
               Privacy
+            </a>{" "}
+            ·{" "}
+            <a
+              href="/llms.txt"
+              type="text/markdown"
+              title="Plain-text profile summary for AI assistants"
+              className="inline-block py-2 hover:text-primary transition-colors"
+              data-testid="link-llms-txt"
+            >
+              llms.txt
             </a>
           </p>
         </div>

@@ -193,6 +193,15 @@ export const profile = {
       highlight: "Local SEO",
       link: "https://armoredgaragedoorraleigh.com/",
     },
+    {
+      id: 5,
+      title: "Raleigh Website Company [Public]",
+      category: "Local",
+      description: "I launched Raleigh Website Company (also at raleighwebsiteco.com), a web design and local SEO studio based in Wake Forest, NC that helps small businesses rank #1 organically on Google and in AI search. Highlights include an interactive 'Signal Map' that shows how one sit-down conversation becomes a website, Google Business Profile, reviews, and AI-ready facts; a free visibility check comparing Maps rankings and what ChatGPT, Claude, and Siri recommend; published month-to-month pricing; and a full Spanish version.",
+      tags: ["Local SEO", "AI Search", "Web Design", "Bilingual"],
+      highlight: "AI Search",
+      link: "https://raleighwebsitecompany.com/",
+    },
   ],
 };
 

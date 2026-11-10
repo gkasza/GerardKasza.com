@@ -1,7 +1,7 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { useInView } from "framer-motion";
 import { useCallback, useEffect, useRef, useState, forwardRef } from "react";
-import { ExternalLink, Layers, LineChart, Lock, Mail, ShieldCheck, Sparkles, Target } from "lucide-react";
+import { ExternalLink, Globe, Layers, LineChart, Lock, Mail, ShieldCheck, Sparkles, Target } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { TiltCard } from "./TiltCard";
@@ -10,6 +10,7 @@ import advisorSignalsImg from "@assets/advisor-signals.webp";
 import portfloImg from "@assets/portflo-screenshot.webp";
 import jamesKaszaImg from "@assets/image_1772987645677.webp";
 import armoredGarageImg from "@assets/armored-garage-door.webp";
+import raleighWebsiteImg from "@assets/raleigh-website-company.webp";
 
 const categories = ["All", "Wealth", "Crypto", "Sports", "Local"] as const;
 type Category = (typeof categories)[number];
@@ -19,6 +20,7 @@ const visuals: Record<number, { icon: typeof LineChart; image: string }> = {
   2: { icon: Layers, image: portfloImg },
   3: { icon: Target, image: jamesKaszaImg },
   4: { icon: ShieldCheck, image: armoredGarageImg },
+  5: { icon: Globe, image: raleighWebsiteImg },
 };
 
 const projects = (profile.projects as Project[]).map((p) => ({ ...p, ...(visuals[p.id] ?? { icon: Sparkles, image: "" }) }));
