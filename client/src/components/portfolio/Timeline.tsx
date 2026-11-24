@@ -60,8 +60,14 @@ function TimelineItem({ experience, index }: { experience: typeof experiences[0]
       data-testid={`timeline-item-${experience.id}`}
     >
       <div className={`hidden lg:block w-1/2 ${isEven ? 'text-right pr-8' : 'text-left pl-8'}`}>
-        <div className={`backdrop-blur-md bg-card/60 border border-border rounded-lg p-6 hover:border-primary/50 transition-colors duration-300 inline-block text-left ${isEven ? 'ml-auto' : 'mr-auto'}`}>
-          <div className="flex items-center gap-3 mb-3 flex-wrap">
+        <div className={`backdrop-blur-md bg-card/60 border rounded-lg p-6 hover:border-primary/50 transition-colors duration-300 inline-block text-left ${experience.current ? 'border-primary/40 shadow-lg shadow-primary/10' : 'border-border'} ${isEven ? 'ml-auto' : 'mr-auto'}`}>
+          <div className="flex items-center gap-2.5 mb-3 flex-wrap">
+            {experience.current && (
+              <span className="inline-flex items-center gap-1.5 text-[11px] font-mono font-semibold text-neon-green bg-neon-green/15 border border-neon-green/30 px-2 py-0.5 rounded uppercase tracking-wider">
+                <span className="w-1.5 h-1.5 rounded-full bg-neon-green animate-pulse" />
+                Current
+              </span>
+            )}
             <span className="text-xs font-mono text-neon-green bg-neon-green/10 px-2 py-1 rounded">{experience.period}</span>
             <span className="text-xs font-mono text-primary bg-primary/10 px-2 py-1 rounded">{experience.location}</span>
           </div>
@@ -95,8 +101,14 @@ function TimelineItem({ experience, index }: { experience: typeof experiences[0]
       </div>
 
       <div className="lg:hidden flex-1">
-        <div className="backdrop-blur-md bg-card/60 border border-border rounded-lg p-6 hover:border-primary/50 transition-colors duration-300">
-          <div className="flex items-center gap-3 mb-3 flex-wrap">
+        <div className={`backdrop-blur-md bg-card/60 border rounded-lg p-6 hover:border-primary/50 transition-colors duration-300 ${experience.current ? 'border-primary/40 shadow-lg shadow-primary/10' : 'border-border'}`}>
+          <div className="flex items-center gap-2.5 mb-3 flex-wrap">
+            {experience.current && (
+              <span className="inline-flex items-center gap-1.5 text-[11px] font-mono font-semibold text-neon-green bg-neon-green/15 border border-neon-green/30 px-2 py-0.5 rounded uppercase tracking-wider">
+                <span className="w-1.5 h-1.5 rounded-full bg-neon-green animate-pulse" />
+                Current
+              </span>
+            )}
             <span className="text-xs font-mono text-neon-green bg-neon-green/10 px-2 py-1 rounded">{experience.period}</span>
             <span className="text-xs font-mono text-primary bg-primary/10 px-2 py-1 rounded">{experience.location}</span>
           </div>
@@ -151,7 +163,7 @@ export function Timeline() {
             Professional <span className="text-primary">Journey</span>
           </h2>
           <p className="text-muted-foreground max-w-2xl mx-auto">
-            15+ years driving growth across wealth management, banking, fintech, and crypto
+            17+ years driving growth across wealth management, banking, fintech, and crypto
           </p>
         </motion.div>
 

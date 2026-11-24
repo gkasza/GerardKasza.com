@@ -1,7 +1,8 @@
 // Single source of truth for profile content. Rendered by the React components
-// and, at build time, into crawler-readable HTML, JSON-LD, llms.txt and sitemap.
+// and, at build time, into crawler-readable HTML, JSON-LD, llms.txt, llms-full.txt and sitemap.
 
 export const profile = {
+  updatedAt: "2026-11-23",
   name: "Gerard Kasza",
   givenName: "Gerard",
   familyName: "Kasza",
@@ -13,11 +14,24 @@ export const profile = {
   verticals: ["Wealth", "Banking", "Fintech", "Crypto", "Credit"],
   email: "gjkasza@gmail.com",
   linkedin: "https://www.linkedin.com/in/gerard-kasza-0x0/",
+  sameAs: [
+    "https://www.linkedin.com/in/gerard-kasza-0x0/",
+    "https://held-away.com/",
+    "https://portflo.xyz/",
+    "https://raleighwebsitecompany.com/",
+    "https://www.wealthmanagement.com/financial-technology/the-future-of-advice-intelligent-signals-for-home-offices-advisors-and-consumers",
+  ],
   location: {
     city: "Raleigh",
     region: "NC",
     country: "US",
     label: "Raleigh-Durham, NC USA",
+  },
+  bios: {
+    short:
+      "Gerard Kasza is a Raleigh-based Enterprise GTM and Strategic Partnerships Executive at Array with 17+ years across wealth management, banking, fintech, credit, and crypto. A back-to-back Sales Leader of the Year, he has closed $25M+ enterprise deals and built products deployed across top-10 US wealth firms.",
+    medium:
+      "Gerard Kasza is an Enterprise GTM and Strategic Partnerships Executive based in Raleigh-Durham, North Carolina, currently leading strategic partnerships across banking, wealth, fintech, credit, and crypto at Array. Over 17+ years in financial services—including leadership roles at Envestnet Yodlee, Envestnet Tamarac, Mutual of Omaha, and Truist—he earned back-to-back Sales Leader of the Year honors (2023 and 2024), closed $25M+ multi-year broker-dealer agreements, and led 50+ enterprise platform rollouts. Beyond closing complex deals, Gerard builds AI and fintech prototypes, including Advisor Signals (featured on WealthManagement.com and evolved into Yodlee Advisor Insights across 3 of the top 10 US wealth firms) and PortFlo.",
   },
   summary: [
     "I'm an accomplished executive blending sales leadership with technical insight across wealth management, banking, credit, crypto, and fintech. Through closing multimillion-dollar enterprise software deals with premier Fortune 500 enterprises and industry giants, negotiating complex contracts, providing consultative guidance on cutting-edge implementations, and leading cross-functional transformations, I've helped these organizations strengthen their digital capabilities and realize extraordinary, quantifiable growth.",
@@ -85,6 +99,8 @@ export const profile = {
       companyUrl: "https://array.com",
       location: "Raleigh, NC",
       period: "April 2026 - Present",
+      startDate: "2026-04",
+      endDate: undefined as string | undefined,
       current: true,
       achievements: [
         "Lead strategic partnerships across banking, wealth, fintech, crypto, and credit — bringing Array's super-aggregator account linking platform, embedded credit, identity, and financial wellness products to financial institutions and digital brands.",
@@ -98,6 +114,8 @@ export const profile = {
       companyUrl: "https://www.linkedin.com/company/yodlee",
       location: "Raleigh, NC",
       period: "2021 - April 2026",
+      startDate: "2021",
+      endDate: "2026-04",
       current: false,
       achievements: [
         "Secured top-10 and top-20 US broker-dealer clients (by AUM; second-largest wealth deal in company history), projected to generate $25M+ over 5 years combined, with strong upsell potential across bank, credit, and insurance relationships.",
@@ -114,6 +132,8 @@ export const profile = {
       companyUrl: "https://www.linkedin.com/company/envestnet-tamarac-inc",
       location: "Raleigh, NC",
       period: "2016 - 2021",
+      startDate: "2016",
+      endDate: "2021",
       current: false,
       achievements: [
         "Served as technical relationship manager for the industry's largest RIAs and institutional wealth firms, bridging product engineering, sales, and clients on complex platform implementations.",
@@ -129,6 +149,8 @@ export const profile = {
       companyUrl: "https://www.linkedin.com/company/mutual-of-omaha/",
       location: "Omaha, Nebraska",
       period: "2014 - 2016",
+      startDate: "2014",
+      endDate: "2016",
       current: false,
       achievements: [
         "Managed recruiting efforts and goals for 10 offices across VA, MD, WV, KY, and OH, training and developing agents to become licensed Financial Advisors (including FINRA Series 6, 63, and securities licensing).",
@@ -144,6 +166,8 @@ export const profile = {
       companyUrl: "https://www.linkedin.com/company/truistfinancialcorporation",
       location: "Charlotte, NC",
       period: "2010 - 2014",
+      startDate: "2010",
+      endDate: "2014",
       current: false,
       achievements: [
         "Promoted to Small Business Banking Officer based on performance in personal banking role.",
@@ -157,6 +181,8 @@ export const profile = {
     {
       id: 1,
       title: "Advisor Signals [Public]",
+      schemaType: "SoftwareApplication" as const,
+      applicationCategory: "FinanceApplication",
       category: "Wealth",
       description: "A prototype platform I launched in April 2025 to automatically detect and act on real-time client financial events across all aggregated external accounts, enabling hyper-personalized insights and proactive engagement opportunities. It later evolved into Yodlee Advisor Insights, now used by 3 of the top 10 wealth management firms and thousands of financial advisors. All data is fictitious and for demo only.",
       featuredText: "As featured on",
@@ -169,6 +195,8 @@ export const profile = {
     {
       id: 2,
       title: "PortFlo Crypto DApp [Public]",
+      schemaType: "SoftwareApplication" as const,
+      applicationCategory: "FinanceApplication",
       category: "Crypto",
       description: "I built PortFlo, a crypto DApp for advanced crypto portfolio management. Connect any Web3 wallet to view unified analytics across Ethereum, real-time market data, P&L, custom charts, and in-depth asset breakdowns. It also features an on-chain analytics query agent. Launched in August 2025, it's password-free, includes a demo mode, and is optimized for desktop and mobile.",
       tags: ["Web3", "Ethereum", "DeFi", "Portfolio Analytics", "AI Onchain Query"],
@@ -178,6 +206,8 @@ export const profile = {
     {
       id: 3,
       title: "JamesKasza.com [Public]",
+      schemaType: "WebSite" as const,
+      applicationCategory: undefined as string | undefined,
       category: "Sports",
       description: "I designed and built a professional website for elite golf coach James Kasza, known as 'That Golf Guy.' He coaches NFL, NBA, and soccer pros, professional athletes, and junior golfers, many of whom have earned D1 scholarships. The site features private coaching, virtual lessons, corporate golf clinics, and motivational speaking services, all optimized for a premium client experience.",
       tags: ["Pro Athletes", "Golf Coaching", "D1 Juniors", "Corporate Events"],
@@ -187,6 +217,8 @@ export const profile = {
     {
       id: 4,
       title: "Armored Garage Door [Public]",
+      schemaType: "WebSite" as const,
+      applicationCategory: undefined as string | undefined,
       category: "Local",
       description: "I built this site for my buddy JC Antunez, a veteran-owned garage door company serving Raleigh and the Triangle. We designed a trust-first local experience: an interactive 'Door Doctor' that triages symptoms to likely cause, safe next step, and typical cost; a live Door Designer that previews style, color, and windows with a ballpark installed price; transparent pricing (rare for the trade); and heavy local SEO. Mobile-first, built to convert the 2 a.m. emergency caller.",
       tags: ["Local SEO", "Veteran-Owned", "Interactive UX", "Lead Gen"],
@@ -196,11 +228,40 @@ export const profile = {
     {
       id: 5,
       title: "Raleigh Website Company [Public]",
+      schemaType: "WebSite" as const,
+      applicationCategory: undefined as string | undefined,
       category: "Local",
       description: "I launched Raleigh Website Company (also at raleighwebsiteco.com), a web design and local SEO studio based in Wake Forest, NC that helps small businesses rank #1 organically on Google and in AI search. Highlights include an interactive 'Signal Map' that shows how one sit-down conversation becomes a website, Google Business Profile, reviews, and AI-ready facts; a free visibility check comparing Maps rankings and what ChatGPT, Claude, and Siri recommend; published month-to-month pricing; and a full Spanish version.",
       tags: ["Local SEO", "AI Search", "Web Design", "Bilingual"],
       highlight: "AI Search",
       link: "https://raleighwebsitecompany.com/",
+    },
+  ],
+  faq: [
+    {
+      question: "Who is Gerard Kasza and what is his current role?",
+      answer:
+        "Gerard Kasza is a Raleigh-Durham, NC–based Enterprise GTM and Strategic Partnerships Executive with 17+ years in financial services. Since April 2026, he leads Strategic Partnerships across banking, wealth, fintech, credit, and crypto at Array, bringing Array's super-aggregator account linking, embedded credit, identity, and financial wellness products to financial institutions and digital brands.",
+    },
+    {
+      question: "What is Gerard Kasza's enterprise sales and partnerships track record?",
+      answer:
+        "At Envestnet Yodlee (2021–April 2026), Gerard secured top-10 and top-20 US broker-dealer agreements—including the second-largest wealth deal in company history—projected at $25M+ over 5 years, grew his enterprise book from $7.6M to $9.2M (124% of target with 42% and 57% YoY growth at top-15 wealth firms), and earned back-to-back Sales Leader of the Year honors in 2023 and 2024.",
+    },
+    {
+      question: "What fintech and AI products has Gerard Kasza built?",
+      answer:
+        "Gerard originated and built Advisor Signals (held-away.com, April 2025), a real-time held-away financial event intelligence prototype featured on WealthManagement.com that evolved into Yodlee Advisor Insights, now used by 3 of the top 10 US wealth firms. He also built PortFlo (portflo.xyz), a Web3 portfolio analytics DApp with an AI onchain query agent, launched Raleigh Website Company, and has shipped 30+ private AI and fintech builds.",
+    },
+    {
+      question: "Which financial services verticals does Gerard Kasza specialize in?",
+      answer:
+        "Gerard specializes in Wealth Management (RIAs, broker-dealers, home offices), Banking & Credit Unions, Open Banking & Data Aggregation, Embedded Finance & Credit, and Cryptocurrency & Digital Assets—bridging C-suite commercial strategy with hands-on technical prototyping.",
+    },
+    {
+      question: "How can I contact Gerard Kasza for enterprise partnerships, executive opportunities, or demos?",
+      answer:
+        "You can reach Gerard directly through the contact form on gerardkasza.com, by emailing gjkasza@gmail.com, or by messaging him on LinkedIn at linkedin.com/in/gerard-kasza-0x0/. He typically responds personally within 24–48 hours.",
     },
   ],
 };

@@ -8,6 +8,11 @@ const MARKDOWN_SOURCES: Record<string, string> = {
   "/privacy": "/privacy.md",
 };
 
+const MARKDOWN_LINK_HEADERS: Record<string, string> = {
+  "/": '</llms.txt>; rel="alternate"; type="text/markdown", </llms-full.txt>; rel="alternate"; type="text/markdown"',
+  "/privacy": '</privacy.md>; rel="alternate"; type="text/markdown"',
+};
+
 export const config = {
   matcher: ["/((?!api/|assets/).*)"],
 };
@@ -35,6 +40,7 @@ export function notFoundMarkdown(pathname: string): string {
     `There is no page at \`${safePath}\` on gerardkasza.com. This is a personal profile site with a single main page.`,
     "",
     `- Profile summary for AI agents (Markdown): ${SITE}/llms.txt`,
+    `- Comprehensive AI dossier (Markdown): ${SITE}/llms-full.txt`,
     `- Homepage: ${SITE}/`,
     `- Privacy policy: ${SITE}/privacy`,
     `- Sitemap: ${SITE}/sitemap.xml`,
@@ -63,9 +69,13 @@ export default async function middleware(request: Request): Promise<Response> {
   const source = MARKDOWN_SOURCES[pathname];
 
   if (source) {
-    if (!wantsMarkdown) return next({ headers: { Vary: "Accept" } });
+    const passHeaders: Record<string, string> = {
+      Vary: "Accept",
+      ...(MARKDOWN_LINK_HEADERS[pathname] ? { Link: MARKDOWN_LINK_HEADERS[pathname] } : {}),
+    };
+    if (!wantsMarkdown) return next({ headers: passHeaders });
     const res = await fetch(new URL(source, url.origin));
-    if (!res.ok) return next({ headers: { Vary: "Accept" } });
+    if (!res.ok) return next({ headers: passHeaders });
     return markdownResponse(await res.text(), 200);
   }
 

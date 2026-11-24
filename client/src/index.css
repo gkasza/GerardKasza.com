@@ -507,12 +507,14 @@ h2:hover .text-primary {
 
 .crypto-ticker-price {
   font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
   font-size: 0.65rem;
   transition: color 0.3s ease;
 }
 
 .crypto-ticker-change {
   font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
   font-size: 0.6rem;
 }
 
@@ -598,6 +600,25 @@ h2:hover .text-primary {
 /* Smooth scrolling for the entire page */
 html {
   scroll-behavior: smooth;
+  scroll-padding-top: 5rem;
+}
+
+.skip-link {
+  position: fixed;
+  top: -100px;
+  left: 1rem;
+  z-index: 100;
+  padding: 0.5rem 0.875rem;
+  border-radius: 0.375rem;
+  background: hsl(var(--primary));
+  color: hsl(var(--primary-foreground));
+  font-size: 0.875rem;
+  font-weight: 600;
+  transition: top 0.15s ease;
+}
+
+.skip-link:focus {
+  top: 1rem;
 }
 
 /* Optimize animations for performance */

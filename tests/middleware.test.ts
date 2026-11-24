@@ -44,11 +44,13 @@ test("homepage serves llms.txt as Markdown when asked", async () => {
   assert.deepEqual(requested, ["/llms.txt"]);
 });
 
-test("homepage passes through to HTML for browsers, with Vary: Accept", async () => {
+test("homepage passes through to HTML for browsers, with Vary: Accept and Link alternate", async () => {
   const requested = stubFetch({});
   const res = await middleware(req("/", BROWSER_ACCEPT));
   assert.ok(isPassThrough(res));
   assert.equal(res.headers.get("vary"), "Accept");
+  assert.match(res.headers.get("link")!, /<\/llms\.txt>; rel="alternate"; type="text\/markdown"/);
+  assert.match(res.headers.get("link")!, /<\/llms-full\.txt>; rel="alternate"; type="text\/markdown"/);
   assert.deepEqual(requested, []);
 });
 

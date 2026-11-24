@@ -74,7 +74,7 @@ export function Recognition() {
           transition={{ duration: 0.6 }}
           className="text-center mb-14"
         >
-          <p className="text-[0.7rem] md:text-[0.65rem] font-medium tracking-[0.35em] uppercase text-primary/50 mb-3">
+          <p className="text-[0.7rem] md:text-[0.65rem] font-medium tracking-[0.35em] uppercase text-primary/80 mb-3">
             Track Record
           </p>
           <h2 className="font-heading text-3xl md:text-4xl lg:text-5xl font-bold">
@@ -96,14 +96,14 @@ export function Recognition() {
                 <div className="hidden md:block w-px h-12 bg-gradient-to-b from-transparent via-primary/25 to-transparent" />
               )}
               <div className="text-center min-w-[120px] group/stat">
-                <div className="font-heading text-4xl md:text-5xl font-bold bg-gradient-to-br from-primary to-neon-green bg-clip-text text-transparent leading-none mb-1.5 transition-transform duration-300 group-hover/stat:scale-110">
+                <div className="font-heading text-4xl md:text-5xl font-bold tabular-nums bg-gradient-to-br from-primary to-neon-green bg-clip-text text-transparent leading-none mb-1.5 transition-transform duration-300 group-hover/stat:scale-110">
                   <CountUp
                     target={stat.target}
                     suffix={stat.suffix}
                     inView={statsInView}
                   />
                 </div>
-                <div className="text-xs font-medium text-muted-foreground/75 uppercase tracking-wider">
+                <div className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
                   {stat.label}
                 </div>
               </div>
@@ -123,7 +123,7 @@ export function Recognition() {
             <div className="w-11 h-11 rounded-[10px] bg-yellow-500/10 border border-yellow-500/20 flex items-center justify-center mb-5">
               <Trophy className="w-5 h-5 text-yellow-500" />
             </div>
-            <p className="text-[0.7rem] md:text-[0.65rem] font-semibold tracking-[0.12em] uppercase text-primary/50 mb-2.5">
+            <p className="text-[0.7rem] md:text-[0.65rem] font-semibold tracking-[0.12em] uppercase text-primary/80 mb-2.5">
               2023 & 2024
             </p>
             <h3 className="font-heading text-xl font-semibold text-foreground mb-2.5 leading-tight">
@@ -149,7 +149,7 @@ export function Recognition() {
             <div className="w-11 h-11 rounded-[10px] bg-primary/10 border border-primary/20 flex items-center justify-center mb-5">
               <Newspaper className="w-5 h-5 text-primary" />
             </div>
-            <p className="text-[0.7rem] md:text-[0.65rem] font-semibold tracking-[0.12em] uppercase text-primary/50 mb-2.5">
+            <p className="text-[0.7rem] md:text-[0.65rem] font-semibold tracking-[0.12em] uppercase text-primary/80 mb-2.5">
               2025 — Press Feature
             </p>
             <h3 className="font-heading text-xl font-semibold text-foreground mb-2.5 leading-tight">
@@ -164,7 +164,7 @@ export function Recognition() {
               href="https://www.wealthmanagement.com/financial-technology/the-future-of-advice-intelligent-signals-for-home-offices-advisors-and-consumers"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 mt-4 text-xs font-medium text-primary/60 hover:text-primary transition-colors"
+              className="inline-flex items-center gap-1.5 mt-4 text-xs font-medium text-primary/85 hover:text-primary transition-colors"
             >
               WealthManagement.com
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-3 h-3"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>

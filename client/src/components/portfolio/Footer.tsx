@@ -84,10 +84,10 @@ export function Footer() {
         </div>
 
         <div className="mt-8 pt-6 border-t border-border/50 flex flex-col sm:flex-row items-center justify-between gap-2">
-          <p className="text-xs text-muted-foreground/50">
+          <p className="text-xs text-muted-foreground/80">
             &copy; {currentYear} Gerard Kasza. All rights reserved.
           </p>
-          <p className="text-xs text-muted-foreground/40">
+          <p className="text-xs text-muted-foreground/70">
             Designed & built by{" "}
             <a
               href="https://raleighwebsitecompany.com/"
@@ -111,6 +111,16 @@ export function Footer() {
               data-testid="link-llms-txt"
             >
               llms.txt
+            </a>{" "}
+            ·{" "}
+            <a
+              href="/llms-full.txt"
+              type="text/markdown"
+              title="Comprehensive profile dossier for AI assistants"
+              className="inline-block py-2 hover:text-primary transition-colors"
+              data-testid="link-llms-full-txt"
+            >
+              llms-full.txt
             </a>
           </p>
         </div>

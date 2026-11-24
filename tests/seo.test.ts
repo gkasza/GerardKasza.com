@@ -1,7 +1,16 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { llmsTxt, sitemapXml, privacyHtml, notFoundHtml } from "../script/seo";
+import {
+  buildJsonLd,
+  llmsTxt,
+  llmsFullTxt,
+  robotsTxt,
+  sitemapXml,
+  privacyHtml,
+  notFoundHtml,
+} from "../script/seo";
 import { privacyMarkdown } from "../shared/privacy";
+import { profile } from "../shared/profile";
 
 const shell = `<!DOCTYPE html><html><head>
 <title>Gerard Kasza | Fintech Partnerships & Enterprise GTM Executive</title>
@@ -12,17 +21,55 @@ const shell = `<!DOCTYPE html><html><head>
 <script type="application/ld+json">{"@type":"Person"}</script>
 </head><body><div id="root"><div style="position:absolute">HOME CONTENT</div></div></body></html>`;
 
-test("llms.txt keeps the llmstxt.org shape and adds when-to-use guidance", () => {
+test("llms.txt keeps the llmstxt.org shape, Quick Facts table, and FAQ", () => {
   const txt = llmsTxt();
   assert.match(txt, /^# Gerard Kasza\n\n> /);
+  assert.match(txt, /\n## Quick Facts \(Verified\)\n/);
   assert.match(txt, /\n## When to use this profile\n/);
   assert.match(txt, /\n## How agents should use this site\n/);
   assert.match(txt, /Accept: text\/markdown/);
+  assert.match(txt, /llms-full\.txt/);
+  assert.match(txt, /\n## Frequently Asked Questions\n/);
 });
 
-test("sitemap lists the homepage and privacy page", () => {
+test("llms-full.txt includes ready-to-cite bios, Q&A, career dates, and sameAs links", () => {
+  const full = llmsFullTxt();
+  assert.match(full, /## Verified Third-Person Bios/);
+  assert.match(full, /## Direct Q&A/);
+  assert.match(full, /## Verified Career Ledger/);
+  assert.match(full, /2026-04 to present/);
+  assert.match(full, /https:\/\/held-away\.com\//);
+});
+
+test("JSON-LD graph includes Person with OrganizationRole dates, SoftwareApplication, BreadcrumbList, and FAQPage", () => {
+  const parsed = JSON.parse(buildJsonLd());
+  const graph = parsed["@graph"] as Record<string, any>[];
+  const person = graph.find((n) => n["@type"] === "Person");
+  const faq = graph.find((n) => n["@type"] === "FAQPage");
+  const breadcrumb = graph.find((n) => n["@type"] === "BreadcrumbList");
+  const apps = graph.filter((n) => n["@type"] === "SoftwareApplication");
+
+  assert.ok(person, "Person node present");
+  assert.equal(person.worksFor["@type"], "OrganizationRole");
+  assert.equal(person.worksFor.startDate, "2026-04");
+  assert.ok(Array.isArray(person.sameAs) && person.sameAs.length >= 4);
+  assert.ok(Array.isArray(person.alumniOf) && person.alumniOf[0]["@type"] === "OrganizationRole");
+  assert.ok(faq && faq.mainEntity.length === profile.faq.length);
+  assert.ok(breadcrumb);
+  assert.equal(apps.length, 2);
+});
+
+test("robots.txt explicitly allows major AI search and user fetchers", () => {
+  assert.match(robotsTxt, /# llms\.txt: https:\/\/gerardkasza\.com\/llms\.txt/);
+  assert.match(robotsTxt, /User-agent: GPTBot/);
+  assert.match(robotsTxt, /User-agent: Perplexity-User/);
+  assert.match(robotsTxt, /User-agent: Claude-User/);
+  assert.match(robotsTxt, /User-agent: DuckAssistBot/);
+});
+
+test("sitemap lists the homepage with honest lastmod and privacy page", () => {
   const xml = sitemapXml("2026-11-07");
-  assert.match(xml, /<loc>https:\/\/gerardkasza\.com\/<\/loc>/);
+  assert.match(xml, /<loc>https:\/\/gerardkasza\.com\/<\/loc><lastmod>2026-11-07<\/lastmod>/);
   assert.match(xml, /<loc>https:\/\/gerardkasza\.com\/privacy<\/loc>/);
 });
 

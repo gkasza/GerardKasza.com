@@ -1,7 +1,7 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { useInView } from "framer-motion";
 import { useCallback, useEffect, useRef, useState, forwardRef } from "react";
-import { ExternalLink, Globe, Layers, LineChart, Lock, Mail, ShieldCheck, Sparkles, Target } from "lucide-react";
+import { Check, Copy, ExternalLink, Globe, Layers, LineChart, Lock, Mail, ShieldCheck, Sparkles, Target } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { TiltCard } from "./TiltCard";
@@ -22,6 +22,8 @@ const visuals: Record<number, { icon: typeof LineChart; image: string }> = {
   4: { icon: ShieldCheck, image: armoredGarageImg },
   5: { icon: Globe, image: raleighWebsiteImg },
 };
+
+const cleanTitle = (title: string) => title.replace(/\s*\[.*?\]\s*$/, "");
 
 const projects = (profile.projects as Project[]).map((p) => ({ ...p, ...(visuals[p.id] ?? { icon: Sparkles, image: "" }) }));
 
@@ -50,14 +52,14 @@ const PrivateProjectsCard = forwardRef<HTMLDivElement, { index: number; onReques
         aria-haspopup="dialog"
         aria-label="More projects: request access"
       >
-        <div className="relative h-32 bg-gradient-to-br from-primary/10 via-card to-neon-green/5 flex items-center justify-center overflow-hidden">
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(0,217,255,0.1),transparent_70%)]" />
+        <div className="relative aspect-[16/9] bg-gradient-to-br from-primary/10 via-card to-neon-green/5 flex items-center justify-center overflow-hidden border-b border-border/60">
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(0,217,255,0.12),transparent_70%)]" />
           <div className="relative flex items-center gap-3">
-            <Lock className="w-8 h-8 text-primary/40 group-hover:text-primary/60 transition-all duration-300" />
-            <Sparkles className="w-6 h-6 text-neon-green/40 group-hover:text-neon-green/60 transition-all duration-300 animate-pulse" />
+            <Lock className="w-9 h-9 text-primary/50 group-hover:text-primary/80 transition-all duration-300" />
+            <Sparkles className="w-6 h-6 text-neon-green/50 group-hover:text-neon-green/80 transition-all duration-300 animate-pulse" />
           </div>
           <div className="absolute top-3 right-3">
-            <Badge variant="secondary" className="bg-primary/20 text-primary border-primary/30 text-xs">
+            <Badge variant="secondary" className="bg-background/80 backdrop-blur-sm text-primary border-primary/35 text-xs">
               30+ Private
             </Badge>
           </div>
@@ -66,8 +68,11 @@ const PrivateProjectsCard = forwardRef<HTMLDivElement, { index: number; onReques
         <div className="p-6 space-y-4">
           <div className="flex items-start justify-between gap-3">
             <h3 className="font-heading text-lg font-semibold text-foreground group-hover:text-primary transition-colors">
-              More Projects [Request Access]
+              More Projects
             </h3>
+            <span className="font-mono text-[10px] uppercase tracking-wider px-2 py-0.5 rounded bg-primary/10 text-primary border border-primary/25 flex-shrink-0">
+              Private
+            </span>
           </div>
           
           <p className="text-muted-foreground text-sm leading-relaxed">
@@ -75,10 +80,15 @@ const PrivateProjectsCard = forwardRef<HTMLDivElement, { index: number; onReques
           </p>
           
           <div className="flex flex-wrap gap-2">
-            <span className="text-xs bg-primary/10 text-primary/80 px-2 py-1 rounded-md">AI Agents</span>
-            <span className="text-xs bg-primary/10 text-primary/80 px-2 py-1 rounded-md">DeFi</span>
-            <span className="text-xs bg-primary/10 text-primary/80 px-2 py-1 rounded-md">Education</span>
-            <span className="text-xs bg-primary/10 text-primary/80 px-2 py-1 rounded-md">Lifestyle</span>
+            <span className="text-xs bg-primary/10 text-primary/85 px-2 py-1 rounded-md">AI Agents</span>
+            <span className="text-xs bg-primary/10 text-primary/85 px-2 py-1 rounded-md">DeFi</span>
+            <span className="text-xs bg-primary/10 text-primary/85 px-2 py-1 rounded-md">Education</span>
+            <span className="text-xs bg-primary/10 text-primary/85 px-2 py-1 rounded-md">Lifestyle</span>
+          </div>
+
+          <div className="pt-3 border-t border-border/60 flex items-center justify-between text-xs font-medium text-primary/85 group-hover:text-primary transition-colors">
+            <span>Request Walkthrough</span>
+            <Lock className="w-3.5 h-3.5" />
           </div>
         </div>
       </motion.div>
@@ -88,6 +98,7 @@ const PrivateProjectsCard = forwardRef<HTMLDivElement, { index: number; onReques
 
 function RequestAccessModal({ open, onClose }: { open: boolean; onClose: () => void }) {
   const closeRef = useRef<HTMLButtonElement>(null);
+  const [copied, setCopied] = useState(false);
 
   useEffect(() => {
     if (!open) return;
@@ -137,13 +148,25 @@ function RequestAccessModal({ open, onClose }: { open: boolean; onClose: () => v
             </div>
 
             <div className="space-y-3">
-              <a
-                href="mailto:gjkasza@gmail.com?subject=Private%20Projects%20Access%20Request"
+              <button
+                type="button"
+                onClick={() => {
+                  navigator.clipboard?.writeText(profile.email).catch(() => {});
+                  setCopied(true);
+                  setTimeout(() => setCopied(false), 1800);
+                }}
                 className="flex items-center justify-center gap-2 w-full px-4 py-2.5 rounded-md bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-all"
                 data-testid="button-email-access"
               >
+                {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+                {copied ? "Copied gjkasza@gmail.com" : "Copy gjkasza@gmail.com"}
+              </button>
+              <a
+                href="mailto:gjkasza@gmail.com?subject=Private%20Projects%20Access%20Request"
+                className="flex items-center justify-center gap-2 w-full px-4 py-2.5 rounded-md border border-border text-muted-foreground text-sm hover:text-foreground hover:border-primary/50 transition-all"
+              >
                 <Mail className="w-4 h-4" />
-                gjkasza@gmail.com
+                Open in Mail App
               </a>
               <a
                 href="https://www.linkedin.com/in/gerard-kasza-0x0/"
@@ -204,27 +227,28 @@ const ProjectCard = forwardRef<HTMLDivElement, { project: typeof projects[0]; in
           role={hasLink ? "link" : undefined}
           tabIndex={hasLink ? 0 : undefined}
         >
-          <div className="relative h-32 bg-gradient-to-br from-primary/20 via-card to-neon-green/10 flex items-center justify-center overflow-hidden">
+          <div className="relative aspect-[16/9] bg-gradient-to-br from-primary/20 via-card to-neon-green/10 flex items-center justify-center overflow-hidden border-b border-border/60">
             {hasImage ? (
               <img
                 src={project.image as string}
-                alt={project.title}
+                alt={cleanTitle(project.title)}
                 loading="lazy"
-                width={600}
-                height={128}
-                className="w-full h-full object-cover object-center opacity-90 group-hover:opacity-100 group-hover:scale-105 transition-all duration-300"
+                width={640}
+                height={360}
+                className="w-full h-full object-cover object-top opacity-95 group-hover:opacity-100 group-hover:scale-105 transition-all duration-300"
               />
             ) : (
               <Icon className="w-12 h-12 text-primary/60 group-hover:text-primary group-hover:scale-110 transition-all duration-300" />
             )}
+            <div className="absolute inset-x-0 top-0 h-14 bg-gradient-to-b from-background/70 to-transparent pointer-events-none" />
             <div className="absolute top-3 right-3">
-              <Badge variant="secondary" className="bg-neon-green/20 text-neon-green border-neon-green/30 text-xs">
+              <Badge variant="secondary" className="bg-background/80 backdrop-blur-sm text-neon-green border-neon-green/40 text-xs">
                 {project.highlight}
               </Badge>
             </div>
             {hasLink && (
-              <div className="absolute top-3 left-3">
-                <ExternalLink className="w-4 h-4 text-primary" />
+              <div className="absolute top-3 left-3 w-7 h-7 rounded-md bg-background/75 backdrop-blur-sm border border-primary/30 flex items-center justify-center">
+                <ExternalLink className="w-3.5 h-3.5 text-primary" />
               </div>
             )}
           </div>
@@ -232,8 +256,11 @@ const ProjectCard = forwardRef<HTMLDivElement, { project: typeof projects[0]; in
           <div className="p-6 space-y-4">
             <div className="flex items-start justify-between gap-3">
               <h3 className="font-heading text-lg font-semibold text-foreground group-hover:text-primary transition-colors">
-                {project.title}
+                {cleanTitle(project.title)}
               </h3>
+              <span className="font-mono text-[10px] uppercase tracking-wider px-2 py-0.5 rounded bg-neon-green/10 text-neon-green border border-neon-green/25 flex-shrink-0">
+                Live
+              </span>
             </div>
 
             <p className="text-muted-foreground text-sm leading-relaxed">
@@ -258,11 +285,18 @@ const ProjectCard = forwardRef<HTMLDivElement, { project: typeof projects[0]; in
 
             <div className="flex flex-wrap gap-2">
               {project.tags.map((tag, i) => (
-                <span key={i} className="text-xs bg-primary/10 text-primary/80 px-2 py-1 rounded-md">
+                <span key={i} className="text-xs bg-primary/10 text-primary/85 px-2 py-1 rounded-md">
                   {tag}
                 </span>
               ))}
             </div>
+
+            {hasLink && (
+              <div className="pt-3 border-t border-border/60 flex items-center justify-between text-xs font-medium text-primary/85 group-hover:text-primary transition-colors">
+                <span>Visit Live Project</span>
+                <ExternalLink className="w-3.5 h-3.5" />
+              </div>
+            )}
           </div>
         </motion.div>
       </TiltCard>

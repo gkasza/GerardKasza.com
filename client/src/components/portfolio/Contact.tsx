@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
 import { useInView } from "framer-motion";
-import { useRef } from "react";
-import { Mail, Linkedin, Send, MapPin, MessageSquare } from "lucide-react";
+import { useRef, useState } from "react";
+import { Mail, Linkedin, Send, MapPin, MessageSquare, Copy, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -20,10 +20,26 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 
+const quickTopics = [
+  "Enterprise Partnerships",
+  "Executive Role / Advisory",
+  "Private Project Demo",
+  "General Inquiry",
+] as const;
+
 export function Contact() {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
   const { toast } = useToast();
+  const [selectedTopic, setSelectedTopic] = useState<string>("");
+  const [copiedEmail, setCopiedEmail] = useState(false);
+
+  const handleCopyEmail = (e: React.MouseEvent) => {
+    e.preventDefault();
+    navigator.clipboard?.writeText("gjkasza@gmail.com").catch(() => {});
+    setCopiedEmail(true);
+    setTimeout(() => setCopiedEmail(false), 1800);
+  };
 
   const form = useForm<InsertContactMessage>({
     resolver: zodResolver(insertContactMessageSchema),
@@ -137,6 +153,34 @@ export function Contact() {
                   />
                 </div>
                 
+                <div className="space-y-2">
+                  <span className="text-xs font-mono uppercase tracking-wider text-muted-foreground">
+                    Quick Topic
+                  </span>
+                  <div className="flex flex-wrap gap-2" role="group" aria-label="Quick contact topic">
+                    {quickTopics.map((topic) => {
+                      const active = selectedTopic === topic;
+                      return (
+                        <button
+                          key={topic}
+                          type="button"
+                          onClick={() => {
+                            setSelectedTopic(topic);
+                            form.setValue("subject", topic, { shouldDirty: true });
+                          }}
+                          className={`text-xs px-3 py-1.5 rounded-full border transition-colors ${
+                            active
+                              ? "border-primary bg-primary/15 text-primary font-medium"
+                              : "border-border bg-background/40 text-muted-foreground hover:border-primary/40 hover:text-foreground"
+                          }`}
+                        >
+                          {topic}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+
                 <FormField
                   control={form.control}
                   name="subject"
@@ -221,19 +265,41 @@ export function Contact() {
                   </div>
                 </a>
                 
-                <a
-                  href="mailto:gjkasza@gmail.com"
-                  className="flex items-center gap-4 p-4 rounded-lg bg-background/30 border border-border hover-elevate transition-colors"
-                  data-testid="link-email-contact"
-                >
-                  <div className="w-12 h-12 rounded-full bg-neon-green/10 flex items-center justify-center">
-                    <Mail className="w-5 h-5 text-neon-green" />
-                  </div>
-                  <div>
-                    <p className="font-medium text-foreground">Email</p>
-                    <p className="text-sm text-muted-foreground">gjkasza@gmail.com</p>
-                  </div>
-                </a>
+                <div className="flex items-center justify-between gap-3 p-4 rounded-lg bg-background/30 border border-border">
+                  <a
+                    href="mailto:gjkasza@gmail.com"
+                    className="flex items-center gap-4 min-w-0 flex-1 group"
+                    data-testid="link-email-contact"
+                  >
+                    <div className="w-12 h-12 rounded-full bg-neon-green/10 flex items-center justify-center flex-shrink-0">
+                      <Mail className="w-5 h-5 text-neon-green" />
+                    </div>
+                    <div className="min-w-0">
+                      <p className="font-medium text-foreground group-hover:text-primary transition-colors">Email</p>
+                      <p className="text-sm text-muted-foreground truncate">gjkasza@gmail.com</p>
+                    </div>
+                  </a>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={handleCopyEmail}
+                    className="border-primary/30 hover:border-primary/60 text-xs flex-shrink-0"
+                    aria-label="Copy email address"
+                  >
+                    {copiedEmail ? (
+                      <>
+                        <Check className="w-3.5 h-3.5 mr-1.5 text-neon-green" />
+                        Copied
+                      </>
+                    ) : (
+                      <>
+                        <Copy className="w-3.5 h-3.5 mr-1.5 text-primary" />
+                        Copy
+                      </>
+                    )}
+                  </Button>
+                </div>
                 
                 <div className="flex items-center gap-4 p-4 rounded-lg bg-background/30 border border-border">
                   <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">

@@ -5,22 +5,36 @@ import { Button } from "@/components/ui/button";
 import { applyTheme, getStoredTheme, nextTheme, type Theme } from "@/lib/theme";
 
 const navItems = [
-  { label: "About", href: "#about" },
-  { label: "Experience", href: "#experience" },
-  { label: "Projects", href: "#projects" },
-  { label: "Ideas", href: "#ideas" },
-  { label: "Contact", href: "#contact" },
+  { label: "Track Record", href: "#recognition", id: "recognition" },
+  { label: "About", href: "#about", id: "about" },
+  { label: "Experience", href: "#experience", id: "experience" },
+  { label: "Projects", href: "#projects", id: "projects" },
+  { label: "Ideas", href: "#ideas", id: "ideas" },
+  { label: "Contact", href: "#contact", id: "contact" },
 ];
 
 export function Navigation() {
   const [isScrolled, setIsScrolled] = useState(false);
+  const [scrollProgress, setScrollProgress] = useState(0);
+  const [activeSection, setActiveSection] = useState("");
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [theme, setTheme] = useState<Theme>(getStoredTheme);
   const closeMenuRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 50);
+      const y = window.scrollY;
+      setIsScrolled(y > 50);
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      setScrollProgress(docHeight > 0 ? Math.min(1, Math.max(0, y / docHeight)) : 0);
+
+      let current = "";
+      for (const item of navItems) {
+        const el = document.getElementById(item.id);
+        if (!el) continue;
+        if (el.getBoundingClientRect().top <= 160) current = item.id;
+      }
+      setActiveSection(current);
     };
     handleScroll();
     window.addEventListener("scroll", handleScroll, { passive: true });
@@ -51,6 +65,9 @@ export function Navigation() {
 
   return (
     <>
+      <a href="#main-content" className="skip-link">
+        Skip to content
+      </a>
       <motion.nav
         initial={{ y: -100 }}
         animate={{ y: 0 }}
@@ -84,16 +101,23 @@ export function Navigation() {
             </div>
 
             <div className="hidden md:flex items-center gap-1">
-              {navItems.filter(item => item.label !== "Contact").map((item) => (
-                <button
-                  key={item.label}
-                  onClick={() => handleNavClick(item.href)}
-                  className="px-4 py-2 text-sm text-muted-foreground hover:text-primary transition-colors rounded-md"
-                  data-testid={`nav-${item.label.toLowerCase()}`}
-                >
-                  {item.label}
-                </button>
-              ))}
+              {navItems.filter(item => item.label !== "Contact").map((item) => {
+                const isActive = activeSection === item.id;
+                return (
+                  <button
+                    key={item.label}
+                    onClick={() => handleNavClick(item.href)}
+                    className={`px-3.5 py-2 text-sm transition-colors rounded-md relative ${
+                      isActive
+                        ? "text-primary bg-primary/10 font-medium"
+                        : "text-muted-foreground hover:text-primary"
+                    }`}
+                    data-testid={`nav-${item.label.toLowerCase().replace(/\s+/g, "-")}`}
+                  >
+                    {item.label}
+                  </button>
+                );
+              })}
               <Button
                 onClick={() => handleNavClick("#contact")}
                 className="ml-2 bg-primary hover:bg-primary/90 text-primary-foreground font-medium px-4"
@@ -117,6 +141,12 @@ export function Navigation() {
             </Button>
           </div>
         </div>
+        {/* Subtle cyberpunk reading progress trace */}
+        <div
+          className="h-[1.5px] bg-gradient-to-r from-primary via-neon-green to-primary transition-[width] duration-75 ease-out"
+          style={{ width: `${scrollProgress * 100}%` }}
+          aria-hidden="true"
+        />
       </motion.nav>
 
       <AnimatePresence>
