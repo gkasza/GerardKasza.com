@@ -240,17 +240,11 @@ const ProjectCard = forwardRef<HTMLDivElement, { project: typeof projects[0]; in
             ) : (
               <Icon className="w-12 h-12 text-primary/60 group-hover:text-primary group-hover:scale-110 transition-all duration-300" />
             )}
-            <div className="absolute inset-x-0 top-0 h-14 bg-gradient-to-b from-background/70 to-transparent pointer-events-none" />
             <div className="absolute top-3 right-3">
-              <Badge variant="secondary" className="bg-background/80 backdrop-blur-sm text-neon-green border-neon-green/40 text-xs">
+              <Badge variant="secondary" className="bg-background/85 backdrop-blur-sm text-neon-green border-neon-green/40 text-xs shadow-sm">
                 {project.highlight}
               </Badge>
             </div>
-            {hasLink && (
-              <div className="absolute top-3 left-3 w-7 h-7 rounded-md bg-background/75 backdrop-blur-sm border border-primary/30 flex items-center justify-center">
-                <ExternalLink className="w-3.5 h-3.5 text-primary" />
-              </div>
-            )}
           </div>
 
           <div className="p-6 space-y-4">
